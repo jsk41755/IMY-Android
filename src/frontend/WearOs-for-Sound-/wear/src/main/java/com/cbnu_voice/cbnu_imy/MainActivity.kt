@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener {
     private var activityContext: Context? = null
-
+    //2231231
     private lateinit var binding: ActivityMainBinding
 
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
