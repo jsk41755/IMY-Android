@@ -325,6 +325,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     override fun onResume() {
         super.onResume()
         try {
+            if (!wearableDeviceConnected) {
+                val tempAct: Activity = activityContext as MainActivity
+                //Couroutine
+                initialiseDevicePairing(tempAct)
+            }
             Wearable.getDataClient(activityContext!!).addListener(this)
             Wearable.getMessageClient(activityContext!!).addListener(this)
             Wearable.getCapabilityClient(activityContext!!)
