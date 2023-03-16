@@ -258,8 +258,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 try {
                     binding.messagelogTextView.visibility = View.VISIBLE
 
-
-
                     //sbTemp.append("\n")
                     beforeBpm.append("방금전, ")
                     beforeBpm.append(bpmPrint)
@@ -272,6 +270,17 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     binding.messagelogTextView2.text = bpmPrint
 
                     binding.messagelogTextView.requestFocus()
+
+                    if(bpmPrint!!.toInt() > 90){
+                        binding.bpmtxt.text = "다소 불안정 합니다."
+                    }
+                    else if(bpmPrint!!.toInt() in 60..89){
+                        binding.bpmtxt.text = "현재 매우 안정적 입니다."
+                    }
+                    else{
+                        binding.bpmtxt.text = "현재 맥박이 매우 낮습니다."
+                    }
+
                     /*binding.messagelogTextView.post {
                         binding.messagelogTextView.scrollTo(0, binding.messagelogTextView.bottom)
                     }*/
