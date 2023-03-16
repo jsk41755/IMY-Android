@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private lateinit var binding: ActivityMainBinding
     private var heartRateCount: Int=0
 
+    private var bpmPrint :String? = null
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,14 +53,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         activityContext = this
         wearableDeviceConnected = false
 
-
-        binding.checkwearablesButton.setOnClickListener {
-            if (!wearableDeviceConnected) {
-                val tempAct: Activity = activityContext as MainActivity
-                //Couroutine
-                initialiseDevicePairing(tempAct)
-            }
+        if (!wearableDeviceConnected) {
+            val tempAct: Activity = activityContext as MainActivity
+            //Couroutine
+            initialiseDevicePairing(tempAct)
         }
+
+        /*binding.checkwearablesButton.setOnClickListener {
+
+        }*/
     }
 
 
@@ -85,9 +88,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                             "Wearable device paired and app is open. Tap the \"Send Message to Wearable\" button to send the message to your wearable device.",
                             Toast.LENGTH_LONG
                         ).show()
-                        binding.deviceconnectionStatusTv.text =
+                        /*binding.deviceconnectionStatusTv.text =
                             "Wearable device paired and app is open."
-                        binding.deviceconnectionStatusTv.visibility = View.VISIBLE
+                        binding.deviceconnectionStatusTv.visibility = View.VISIBLE*/
                         wearableDeviceConnected = true
                     } else {
                         Toast.makeText(
@@ -95,9 +98,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                             "A wearable device is paired but the wearable app on your watch isn't open. Launch the wearable app and try again.",
                             Toast.LENGTH_LONG
                         ).show()
-                        binding.deviceconnectionStatusTv.text =
+                        /*binding.deviceconnectionStatusTv.text =
                             "Wearable device paired but app isn't open."
-                        binding.deviceconnectionStatusTv.visibility = View.VISIBLE
+                        binding.deviceconnectionStatusTv.visibility = View.VISIBLE*/
                         wearableDeviceConnected = false
                     }
                 } else {
@@ -106,9 +109,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         "No wearable device paired. Pair a wearable device to your phone using the Wear OS app and try again.",
                         Toast.LENGTH_LONG
                     ).show()
-                    binding.deviceconnectionStatusTv.text =
+                    /*binding.deviceconnectionStatusTv.text =
                         "Wearable device not paired and connected."
-                    binding.deviceconnectionStatusTv.visibility = View.VISIBLE
+                    binding.deviceconnectionStatusTv.visibility = View.VISIBLE*/
                     wearableDeviceConnected = false
                 }
             }
@@ -220,6 +223,9 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
     @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
+        var beforeBpm = StringBuilder()
+
+
         try {
             val s =
                 String(p0.data, StandardCharsets.UTF_8)
@@ -240,13 +246,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     "Received acknowledgement message that app is open in wear"
                 )
 
-                val sbTemp = StringBuilder()
+                val sbTemp = StringBuilder()/*
                 sbTemp.append(binding.messagelogTextView.text.toString())
-                sbTemp.append("\nWearable device connected.")
+                sbTemp.append("\nWearable device connected.")*/
                 Log.d("receive1", " $sbTemp")
                 binding.messagelogTextView.text = sbTemp
-
-                binding.checkwearablesButton.visibility = View.GONE
                 messageEvent = p0
                 wearableNodeUri = p0.sourceNodeId
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
@@ -254,26 +258,28 @@ class MainActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                 try {
                     binding.messagelogTextView.visibility = View.VISIBLE
 
-                    val sbTemp = StringBuilder()
-
-                    sbTemp.append("\n")
-                    sbTemp.append(s)
-                    sbTemp.append(" - (Received from wearable)")
-                    Log.d("receive1", " $sbTemp")
 
 
-                    binding.messagelogTextView.append(sbTemp)
+                    //sbTemp.append("\n")
+                    beforeBpm.append("방금전, ")
+                    beforeBpm.append(bpmPrint)
+                    beforeBpm.append("BPM")
+                    Log.d("receive1", " $beforeBpm")
 
-                    binding.scrollviewText.requestFocus()
-                    binding.scrollviewText.post {
-                        binding.scrollviewText.scrollTo(0, binding.scrollviewText.bottom)
-                    }
+                    binding.messagelogTextView.text = beforeBpm
+
+                    bpmPrint = s.substring(0 until 2)
+                    binding.messagelogTextView2.text = bpmPrint
+
+                    binding.messagelogTextView.requestFocus()
+                    /*binding.messagelogTextView.post {
+                        binding.messagelogTextView.scrollTo(0, binding.messagelogTextView.bottom)
+                    }*/
+                    beforeBpm.setLength(0)
 
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
-
 
                 if(heartRateCount>10){
                     startActivity(Intent(this,Chatbot::class.java).putExtra("stage", "refuse"))
