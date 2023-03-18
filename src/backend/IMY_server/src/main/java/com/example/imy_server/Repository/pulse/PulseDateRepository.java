@@ -13,4 +13,6 @@ public interface PulseDateRepository extends JpaRepository<PulseDate,Long> {
     List<PulseDate> findAll();
     Boolean existsByCreatedDate(LocalDate date);
 
+    PulseDate findPulseDateByCreatedDate(LocalDate date);
+
 }

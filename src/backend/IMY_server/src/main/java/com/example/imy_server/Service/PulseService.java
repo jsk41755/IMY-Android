@@ -49,7 +49,17 @@ public class PulseService {
 
         //날짜가 존재하는지 확인하고
         if(pulseDateRepository.existsByCreatedDate(date)) { //날짜가 존재하면 해당하는 날짜에 pulse를 파싱해서 넣기
-            pulseRepository.saveAllAndFlush(pulses);
+            PulseDate pulseDate = pulseDateRepository.findPulseDateByCreatedDate(date);
+            List<Pulse> pulseList = new ArrayList<>();
+            for (Pulse p : pulses) {
+                Pulse pulse = new Pulse(
+                        p.getCreatedTime(),
+                        p.getPulseValue()
+                );
+                pulse.setPulseDate(pulseDate);
+                pulseList.add(pulse);
+            }
+            pulseRepository.saveAllAndFlush(pulseList);
         }else{ //날짜가 존재하지 않으면 해당하는 맥박과 해당하는 날짜를 넣음
             PulseDate pulseDate = new PulseDate(date);
             List<Pulse> pulseList = new ArrayList<>();

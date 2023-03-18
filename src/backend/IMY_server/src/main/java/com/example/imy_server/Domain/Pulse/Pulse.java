@@ -18,14 +18,14 @@ import java.util.List;
 public class Pulse {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pulseSeq;
     private LocalTime createdTime;
     private String pulseValue;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="createdDate")
+    @JoinColumn(name="dateSeq")
     private PulseDate pulseDate;
 
     public Pulse(LocalTime createdTime, String pulseValue) {

@@ -15,9 +15,10 @@ import java.util.List;
 @NoArgsConstructor
 public class PulseDate {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long dateSeq;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long dateSeq;
+
     private LocalDate createdDate;
 
     @JsonManagedReference
