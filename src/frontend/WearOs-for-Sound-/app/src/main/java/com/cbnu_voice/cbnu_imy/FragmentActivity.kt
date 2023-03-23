@@ -11,11 +11,14 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.cbnu_voice.cbnu_imy.view.*
 import com.cbnu_voice.cbnu_imy.databinding.FragActivityBinding
 import com.cbnu_voice.cbnu_imy.viewmodel.MainViewModel
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.util.HashSet
@@ -50,6 +53,7 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         binding = FragActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         replaceFragment(HomeFragment())
+        //binding.bottomNav.itemIconTintList
 
         binding.bottomNav.selectedItemId = R.id.menu_home
 
@@ -67,6 +71,7 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             }
             true
         }
+
 
         activityContext = this
         wearableDeviceConnected = false

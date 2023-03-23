@@ -83,6 +83,7 @@ dependencies {
     def nav_version = "2.5.3"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-runtime:$nav_version"
 
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

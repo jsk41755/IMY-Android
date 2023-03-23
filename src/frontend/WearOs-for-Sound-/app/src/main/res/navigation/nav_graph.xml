@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@drawable/home">
+
+    <fragment
+        android:id="@+id/menu_home"
+        android:name="com.cbnu_voice.cbnu_imy.view.HomeFragment"
+        android:label="@string/home_activate"
+        tools:layout="@layout/fragment_home" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/menu_chat"
+        android:name="com.cbnu_voice.cbnu_imy.view.chatFragment"
+        android:label="@string/chat_activate"
+        tools:layout="@layout/fragment_chat" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/menu_favorite"
+        android:name="com.cbnu_voice.cbnu_imy.view.favoriteFragment"
+        android:label="@string/favorite_activate"
+        tools:layout="@layout/fragment_favorite" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/menu_record"
+        android:name="com.cbnu_voice.cbnu_imy.view.recordFragment"
+        android:label="@string/record_activate"
+        tools:layout="@layout/fragment_record" />
+
+    <fragment
+        android:id="@+id/menu_setting"
+        android:name="com.cbnu_voice.cbnu_imy.view.settingFragment"
+        android:label="@string/setting_activate"
+        tools:layout="@layout/fragment_setting" />
+
+</navigation>

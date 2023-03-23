@@ -41,7 +41,7 @@ class HomeFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedViewModel.data.observe(viewLifecycleOwner, Observer { newData ->
+        sharedViewModel.data.observe(viewLifecycleOwner, Observer {
             // 데이터 업데이트 시 처리할 작업
             binding?.messagelogTextView2!!.text = sharedViewModel.data.value
             sharedViewModel.data.value?.let { bpmText(it) }
