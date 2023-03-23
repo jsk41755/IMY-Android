@@ -160,6 +160,16 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_corpus" />
 
     <Button
+        android:id="@+id/btn_pulse"
+        android:layout_width="62dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="324dp"
+        android:text="p"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/btnBargain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

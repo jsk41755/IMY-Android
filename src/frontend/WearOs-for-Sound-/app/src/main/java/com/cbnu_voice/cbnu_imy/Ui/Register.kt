@@ -93,6 +93,10 @@ class Register : AppCompatActivity() {
             startActivity(Intent(this@Register,Chatbot::class.java).putExtra("stage", "refuse"))
         }
 
+        binding.btnPulse.setOnClickListener {
+            startActivity(Intent(this@Register,PulseAction::class.java))
+        }
+
     }
     fun Signup(user: User){
         val call = RetrofitBuilder.userapi.postSignupResponse(user)
@@ -222,4 +226,6 @@ class Register : AppCompatActivity() {
             }
         })
     }
+
+
 }
