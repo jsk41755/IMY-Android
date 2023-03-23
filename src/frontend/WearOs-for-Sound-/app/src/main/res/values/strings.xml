@@ -9,4 +9,6 @@
     <string name="init">...</string>
     <string name="check_for_connected_wearables">Check for connected wearables</string>
     <string name="send_message_alt">Send Message to Wearable</string>
+
+    <string name="bpm">77</string>
 </resources>

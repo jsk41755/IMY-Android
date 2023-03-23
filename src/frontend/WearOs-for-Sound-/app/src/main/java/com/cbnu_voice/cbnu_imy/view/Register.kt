@@ -1,4 +1,4 @@
-package com.cbnu_voice.cbnu_imy.Ui
+package com.cbnu_voice.cbnu_imy.view
 
 import android.content.Intent
 import android.os.Bundle
