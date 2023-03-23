@@ -113,24 +113,24 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     if (getNodesResBool[1]) {
                         Toast.makeText(
                             activityContext,
-                            "Wearable device paired and app is open. Tap the \"Send Message to Wearable\" button to send the message to your wearable device.",
-                            Toast.LENGTH_LONG
+                            "스마트워치와 연동 되었습니다.",
+                            Toast.LENGTH_SHORT
                         ).show()
 
                         wearableDeviceConnected = true
                     } else {
                         Toast.makeText(
                             activityContext,
-                            "A wearable device is paired but the wearable app on your watch isn't open. Launch the wearable app and try again.",
-                            Toast.LENGTH_LONG
+                            "스마트워치부터 실행하고 다시 실행해주세요.",
+                            Toast.LENGTH_SHORT
                         ).show()
                         wearableDeviceConnected = false
                     }
                 } else {
                     Toast.makeText(
                         activityContext,
-                        "No wearable device paired. Pair a wearable device to your phone using the Wear OS app and try again.",
-                        Toast.LENGTH_LONG
+                        "스마트워치 연동 실패",
+                        Toast.LENGTH_SHORT
                     ).show()
                     wearableDeviceConnected = false
                 }
