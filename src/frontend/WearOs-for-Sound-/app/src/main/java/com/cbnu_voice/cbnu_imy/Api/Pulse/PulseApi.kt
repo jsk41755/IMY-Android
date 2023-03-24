@@ -1,10 +1,8 @@
 package com.cbnu_voice.cbnu_imy.Api.Pulse
 
 import com.cbnu_voice.cbnu_imy.Dto.Pulse.DailyPulseDto
-import com.cbnu_voice.cbnu_imy.Dto.Pulse.Pulse
 import retrofit2.Call
 import retrofit2.http.*
-import java.time.LocalDate
 
 public interface PulseApi {
 
@@ -24,7 +22,7 @@ public interface PulseApi {
     @GET("/pulse")
     @Headers("accept: application/json",
         "content-type: application/json")
-    fun getPulseResponse(): Call<DailyPulseDto>
+    fun getPulseResponse(): Call<List<DailyPulseDto>>
 
 
 }

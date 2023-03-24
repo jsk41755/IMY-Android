@@ -6,8 +6,9 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object PulseBuilder {
     var pulseApi: PulseApi
-    val localhost="http://localhost:8083"
+    val localhost="http://172.17.0.4:8083"
     init{
+        println("connected")
         val retrofit= Retrofit.Builder()
             .baseUrl(localhost)
             .addConverterFactory(ScalarsConverterFactory.create() )
