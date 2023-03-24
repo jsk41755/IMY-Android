@@ -1,12 +1,7 @@
 package com.cbnu_voice.cbnu_imy.Dto.Pulse
 
-import java.time.LocalDate
-import java.time.LocalTime
+import com.cbnu_voice.cbnu_imy.Data.Pulse
 
-data class Pulse (
-    val createdTime: String,
-    val pulseValue: String
-)
 
 data class DailyPulseDto (
     var createdDate: String,

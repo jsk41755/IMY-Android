@@ -13,7 +13,7 @@ public interface PulseApi {
     @Headers("accept: application/json",
         "content-type: application/json")
     fun postPulseResponse(
-        @Body pulse: String
+        @Body pulse: DailyPulseDto
     ): Call<DailyPulseDto>
 
     /**
