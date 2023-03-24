@@ -9,6 +9,7 @@ import com.cbnu_voice.cbnu_imy.Data.Message
 import com.cbnu_voice.cbnu_imy.Dto.CorpusDto
 import com.cbnu_voice.cbnu_imy.R
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -52,7 +53,7 @@ class chatFragment : Fragment() {
     private lateinit var speechRecognizer: SpeechRecognizer
     private var textToSpeech: TextToSpeech? = null
 
-    lateinit var soundPool: SoundPool
+//    lateinit var soundPool: SoundPool
     private var RefuseSoundList: List<Int>?  = null
     private var TreSoundList: List<Int>?  = null
     private var TTreSoundList: List<Int>?  = null
@@ -88,18 +89,18 @@ class chatFragment : Fragment() {
        // clickEvents()
 
         val random = (0..2).random()
-        if(stage.equals("refuse")){
+     //   if(stage.equals("refuse")){
             customBotMessage("안녕! , 오늘 기분은 어때?")
             GlobalScope.launch {
                 delay(1000)
 
                 withContext(Dispatchers.Main) {
                     rv_messages.scrollToPosition(adapter.itemCount - 1)
-                    soundPool.play(RefuseSoundList!!.get(0),2f, 2f,0,0,1f)
+                  //  soundPool.play(RefuseSoundList!!.get(0),2f, 2f,0,0,1f)
 
                 }
             }
-        }
+     //   }
 
 
     }
@@ -151,7 +152,7 @@ class chatFragment : Fragment() {
             ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(activity as MainActivity,
+            ActivityCompat.requestPermissions(context as Activity,
                 arrayOf(Manifest.permission.RECORD_AUDIO), 0)
         }
     }
@@ -162,11 +163,11 @@ class chatFragment : Fragment() {
         override fun onReadyForSpeech(params: Bundle) {
             //Toast.makeText(applicationContext, "음성인식 시작", Toast.LENGTH_SHORT).show()
             Toast.makeText(requireContext(), "음성인식 시작", Toast.LENGTH_SHORT).show()
-            binding.tvState.text = "이제 말씀하세요!"
+            binding?.tvState!!.text = "이제 말씀하세요!"
         }
         // 말하기 시작했을 때 호출
         override fun onBeginningOfSpeech() {
-            binding.tvState.text = "잘 듣고 있어요."
+            binding?.tvState!!.text = "잘 듣고 있어요."
         }
         // 입력받는 소리의 크기를 알려줌
         override fun onRmsChanged(rmsdB: Float) {}
@@ -174,7 +175,7 @@ class chatFragment : Fragment() {
         override fun onBufferReceived(buffer: ByteArray) {}
         // 말하기를 중지하면 호출
         override fun onEndOfSpeech() {
-            binding.tvState.text = "끝!"
+            binding?.tvState!!.text = "끝!"
         }
         // 오류 발생했을 때 호출
         override fun onError(error: Int) {
@@ -190,13 +191,13 @@ class chatFragment : Fragment() {
                 SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "말하는 시간초과"
                 else -> "알 수 없는 오류임"
             }
-            binding.tvState.text = "에러 발생: $message"
+            binding?.tvState!!.text = "에러 발생: $message"
         }
         // 인식 결과가 준비되면 호출
         override fun onResults(results: Bundle) {
             // 말을 하면 ArrayList에 단어를 넣고 textView에 단어를 이어줌
             val matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
-            for (i in matches!!.indices) binding.etMessage.setText(matches[i])
+            for (i in matches!!.indices) binding?.etMessage!!.setText(matches[i])
             sendMessage()
 
         }
