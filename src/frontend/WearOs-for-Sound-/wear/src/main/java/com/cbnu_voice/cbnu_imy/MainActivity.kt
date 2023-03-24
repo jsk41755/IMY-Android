@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
         lifecycleScope.launchWhenStarted {
             viewModel.heartRateBpm.collect {
-                binding.lastMeasuredValue.text = String.format("%.1f", it)
+                binding?.lastMeasuredValue!!.text = String.format("%.1f", it)
                     if (mobileDeviceConnected) {
                         if (binding.lastMeasuredValue.text!!.isNotEmpty()) {
 

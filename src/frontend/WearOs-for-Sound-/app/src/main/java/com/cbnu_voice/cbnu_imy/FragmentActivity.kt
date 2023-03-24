@@ -53,7 +53,6 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         binding = FragActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
         replaceFragment(HomeFragment())
-        //binding.bottomNav.itemIconTintList
 
         binding.bottomNav.selectedItemId = R.id.menu_home
 
@@ -78,11 +77,6 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
         sharedViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        if (!wearableDeviceConnected) {
-            val tempAct: Activity = activityContext as FragmentActivity
-            //Couroutine
-            initialiseDevicePairing(tempAct)
-        }
 
     }
 
