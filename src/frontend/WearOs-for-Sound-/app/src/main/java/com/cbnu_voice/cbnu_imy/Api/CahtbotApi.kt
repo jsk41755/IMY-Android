@@ -13,7 +13,7 @@ interface ChatbotApi {
         @Query("s") s:String
     ): Call<ChatbotDto>
 
-    @GET("/chatbot/g")
+    @GET("/chatbot/b")
     fun getKobertResponse(
         @Query("s") s:String
     ): Call<ChatbotDto>

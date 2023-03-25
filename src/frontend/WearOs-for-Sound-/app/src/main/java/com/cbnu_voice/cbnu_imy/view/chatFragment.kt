@@ -91,6 +91,7 @@ class chatFragment : Fragment() {
         val random = (0..2).random()
      //   if(stage.equals("refuse")){
             customBotMessage("안녕! , 오늘 기분은 어때?")
+            println("이남자 도대체 뭐야")
             GlobalScope.launch {
                 delay(1000)
 
@@ -278,10 +279,11 @@ class chatFragment : Fragment() {
                 Chatbotlist(message);
                 response=chatresponse;
 
+
                 //Adds it to our local list
 
                 //messagesList.add(Message(response, RECEIVE_ID, timeStamp))
-                messagesList.add(Message(chatresponse, RECEIVE_ID, timeStamp))
+                messagesList.add(Message("이게 맞냐고", RECEIVE_ID, timeStamp))
 
                 //Inserts our message into the adapter
                 adapter.insertMessage(Message(chatresponse, RECEIVE_ID, timeStamp))
@@ -334,10 +336,12 @@ class chatFragment : Fragment() {
         withContext(Dispatchers.IO) {
 
             runCatching {
-                val retrofit = RetrofitBuilder.chatbotapi.getKogpt2Response(s)
+                val retrofit = RetrofitBuilder.chatbotapi.getKobertResponse(s)
                 val res = retrofit.execute().body()
+                //Toast.makeText(requireContext(), res?.answer, Toast.LENGTH_SHORT).show()
                 //res.code() == 200
                 println("res = ${res}")
+                Log.v("태그", "${res}")
                 chatresponse= res!!.answer
             }.getOrDefault(false)
         }
