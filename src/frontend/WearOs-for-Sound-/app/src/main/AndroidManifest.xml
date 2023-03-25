@@ -26,14 +26,13 @@
         tools:ignore="GoogleAppIndexingWarning">
 
 
-
         <activity
-            android:name=".Ui.Chatbot"
+            android:name=".view.Chatbot"
             android:exported="true">
         </activity>
 
 
-        <activity android:name=".Ui.PulseAction"
+        <activity android:name=".FragmentActivity"
             android:resizeableActivity="true"
             android:exported="true"
             tools:targetApi="n">

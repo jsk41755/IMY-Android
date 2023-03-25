@@ -3,7 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-
+    <color name="white">#FFFFFF</color>
 
 
     <color name="md_theme_light_primary">#006A5F</color>
@@ -60,6 +60,10 @@
     <color name="md_theme_dark_primaryInverse">#006A5F</color>
     <color name="seed">#009688</color>
     <color name="error">#BA1B1B</color>
+
+    <color name="imy_text_gray">#8391A1</color>
+    <color name="imy_text">#43D681</color>
+    <color name="imy_chart">#7EFF06</color>
 
 
 </resources>

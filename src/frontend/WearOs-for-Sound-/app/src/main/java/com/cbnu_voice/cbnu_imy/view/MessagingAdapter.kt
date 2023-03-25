@@ -1,4 +1,4 @@
-package com.cbnu_voice.cbnu_imy.Ui
+package com.cbnu_voice.cbnu_imy.view
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater

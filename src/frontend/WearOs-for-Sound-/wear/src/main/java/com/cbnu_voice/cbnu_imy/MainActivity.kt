@@ -66,8 +66,8 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         // Enables Always-on
         ambientController = AmbientModeSupport.attach(this)
 
-        /*//On click listener for sendmessage button
-        binding.sendmessageButton.setOnClickListener {
+        //On click listener for sendmessage button
+        /*binding.sendmessageButton.setOnClickListener {
             if (mobileDeviceConnected) {
                 if (binding.lastMeasuredValue.text!!.isNotEmpty()) {
 
@@ -136,15 +136,15 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
                 updateViewVisiblity(it)
             }
         }
-        lifecycleScope.launchWhenStarted {
+        /*lifecycleScope.launchWhenStarted {
             viewModel.heartRateAvailable.collect {
                 binding.statusText.text = getString(R.string.measure_status, it)
             }
-        }
+        }*/
 
         lifecycleScope.launchWhenStarted {
             viewModel.heartRateBpm.collect {
-                binding.lastMeasuredValue.text = String.format("%.1f", it)
+                binding?.lastMeasuredValue!!.text = String.format("%.1f", it)
                     if (mobileDeviceConnected) {
                         if (binding.lastMeasuredValue.text!!.isNotEmpty()) {
 
@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         // These views are visible when the capability is available.
         (uiState is UiState.HeartRateAvailable).let {
             binding.statusText.isVisible = it
-            binding.lastMeasuredLabel.isVisible = it
+            //binding.lastMeasuredLabel.isVisible = it
             binding.lastMeasuredValue.isVisible = it
             binding.heart.isVisible = it
         }

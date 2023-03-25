@@ -13,6 +13,11 @@ interface ChatbotApi {
         @Query("s") s:String
     ): Call<ChatbotDto>
 
+    @GET("/chatbot/b")
+    fun getKobertResponse(
+        @Query("s") s:String
+    ): Call<ChatbotDto>
+
 
     @GET("/")
     fun getHomeResponse(
