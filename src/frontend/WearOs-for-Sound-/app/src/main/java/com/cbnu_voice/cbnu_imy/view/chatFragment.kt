@@ -63,22 +63,13 @@ class chatFragment : Fragment() {
     var messagesList = mutableListOf<Message>()
 
     private lateinit var adapter: MessagingAdapter
-    //private val botList = listOf("상우야", "정주야", "승규야")
-    private var corpuslist : List<CorpusDto> = listOf() //corpus 데이터 받을 리스트 변수
-    private lateinit var stage : String      //register로 부터 입력받은 우울증 단계
     private var chatresponse=""   //ai chatbot 답변
-
 
 
     private var binding: FragmentChatBinding? = null
 
 
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//
-//        // 2. Context를 액티비티로 형변환해서 할당
-//        mainActivity = context as MainActivity
-//    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,10 +79,7 @@ class chatFragment : Fragment() {
        // recyclerView()
        // clickEvents()
 
-        val random = (0..2).random()
-     //   if(stage.equals("refuse")){
             customBotMessage("안녕! , 오늘 기분은 어때?")
-            println("이남자 도대체 뭐야")
             GlobalScope.launch {
                 delay(1000)
 
@@ -101,7 +89,7 @@ class chatFragment : Fragment() {
 
                 }
             }
-     //   }
+
 
 
     }
@@ -110,6 +98,17 @@ class chatFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         recyclerView()
         clickEvents()
+
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+       // intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, packageName)    // 여분의 키
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")         // 언어 설정
+
+        binding?.btnSpeech!!.setOnClickListener {
+            // 새 SpeechRecognizer 를 만드는 팩토리 메서드
+            speechRecognizer = SpeechRecognizer.createSpeechRecognizer(requireContext())
+            speechRecognizer.setRecognitionListener(recognitionListener)    // 리스너 설정
+            speechRecognizer.startListening(intent)                         // 듣기 시작
+        }
     }
 
     override fun onCreateView(
@@ -129,10 +128,6 @@ class chatFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_chat, container, false)
     }
 
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        _binding = null
-//    }
 
     private fun setAlarm() {
         textToSpeech = TextToSpeech(requireContext(), TextToSpeech.OnInitListener {
@@ -283,10 +278,10 @@ class chatFragment : Fragment() {
                 //Adds it to our local list
 
                 //messagesList.add(Message(response, RECEIVE_ID, timeStamp))
-                messagesList.add(Message("이게 맞냐고", RECEIVE_ID, timeStamp))
+                messagesList.add(Message(response, RECEIVE_ID, timeStamp))
 
                 //Inserts our message into the adapter
-                adapter.insertMessage(Message(chatresponse, RECEIVE_ID, timeStamp))
+                adapter.insertMessage(Message(response, RECEIVE_ID, timeStamp))
                 //adapter.insertMessage(Message(response, RECEIVE_ID, timeStamp))
                 //Scrolls us to the position of the latest message
                 rv_messages.scrollToPosition(adapter.itemCount - 1)
@@ -307,7 +302,7 @@ class chatFragment : Fragment() {
 
                 }
 
-                //textToSpeech?.speak(response, TextToSpeech.QUEUE_FLUSH, null)
+                textToSpeech?.speak(response, TextToSpeech.QUEUE_FLUSH, null)
                 textToSpeech?.playSilentUtterance(750,TextToSpeech.QUEUE_ADD,null) // deley시간 설정
             }
         }
@@ -324,8 +319,8 @@ class chatFragment : Fragment() {
 
                 rv_messages.scrollToPosition(adapter.itemCount - 1)
 
-                //textToSpeech?.speak(message, TextToSpeech.QUEUE_FLUSH, null)
-                //textToSpeech?.playSilentUtterance(750,TextToSpeech.QUEUE_ADD,null) // deley시간 설정
+                textToSpeech?.speak(message, TextToSpeech.QUEUE_FLUSH, null)
+                textToSpeech?.playSilentUtterance(750,TextToSpeech.QUEUE_ADD,null) // deley시간 설정
             }
         }
     }
