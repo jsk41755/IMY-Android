@@ -61,5 +61,9 @@
     <color name="seed">#009688</color>
     <color name="error">#BA1B1B</color>
 
+    <color name="imy_text_gray">#8391A1</color>
+    <color name="imy_text">#43D681</color>
+    <color name="imy_chart">#7EFF06</color>
+
 
 </resources>
