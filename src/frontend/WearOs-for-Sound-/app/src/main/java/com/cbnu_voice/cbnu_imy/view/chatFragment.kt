@@ -88,6 +88,9 @@ class chatFragment : Fragment() {
        // intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, packageName)    // 여분의 키
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")         // 언어 설정
 
+        /**
+         * call data in mainViewModel
+         */
         sharedViewModel.data.observe(viewLifecycleOwner,  Observer {
             // 데이터 업데이트 시 처리할 작업
             binding?.bpmChatTxt!!.text = sharedViewModel.data.value}

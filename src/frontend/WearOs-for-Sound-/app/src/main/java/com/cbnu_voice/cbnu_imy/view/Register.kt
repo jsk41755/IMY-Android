@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
 import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder2
 import com.cbnu_voice.cbnu_imy.Data.User
+import com.cbnu_voice.cbnu_imy.Ui.PulseAction
 import com.cbnu_voice.cbnu_imy.databinding.ActivityRegisterBinding
 import kotlinx.android.synthetic.main.activity_register.*
 /*import com.codepalace.chatbot.Api.RetrofitBuilder
@@ -94,7 +95,7 @@ class Register : AppCompatActivity() {
         }
 
         binding.btnPulse.setOnClickListener {
-            startActivity(Intent(this@Register,PulseAction::class.java))
+            startActivity(Intent(this@Register, PulseAction::class.java))
         }
 
     }
