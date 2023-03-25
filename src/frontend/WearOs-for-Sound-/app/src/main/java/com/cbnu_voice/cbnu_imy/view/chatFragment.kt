@@ -27,15 +27,17 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
-import com.cbnu_voice.cbnu_imy.MainActivity
+import androidx.lifecycle.Observer
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_SEARCH
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
 import com.cbnu_voice.cbnu_imy.Utils.Constants.SEND_ID
 import com.cbnu_voice.cbnu_imy.Utils.Time
 import com.cbnu_voice.cbnu_imy.databinding.FragmentChatBinding
+import com.cbnu_voice.cbnu_imy.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -43,20 +45,12 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 class chatFragment : Fragment() {
-    private val TAG = "MainActivity"
     private lateinit var speechRecognizer: SpeechRecognizer
     private var textToSpeech: TextToSpeech? = null
 
-//    lateinit var soundPool: SoundPool
-    private var RefuseSoundList: List<Int>?  = null
-    private var TreSoundList: List<Int>?  = null
-    private var TTreSoundList: List<Int>?  = null
+    private lateinit var sharedViewModel: MainViewModel
 
     //You can ignore this messageList if you're coming from the tutorial,
     // it was used only for my personal debugging
@@ -65,32 +59,23 @@ class chatFragment : Fragment() {
     private lateinit var adapter: MessagingAdapter
     private var chatresponse=""   //ai chatbot 답변
 
-
     private var binding: FragmentChatBinding? = null
-
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestPermission()
         setAlarm()
-       // recyclerView()
-       // clickEvents()
 
-            customBotMessage("안녕! , 오늘 기분은 어때?")
+        sharedViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+
+        customBotMessage("안녕! , 오늘 기분은 어때?")
             GlobalScope.launch {
                 delay(1000)
-
                 withContext(Dispatchers.Main) {
                     rv_messages.scrollToPosition(adapter.itemCount - 1)
-                  //  soundPool.play(RefuseSoundList!!.get(0),2f, 2f,0,0,1f)
-
                 }
             }
-
-
 
     }
 
@@ -102,6 +87,11 @@ class chatFragment : Fragment() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
        // intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, packageName)    // 여분의 키
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")         // 언어 설정
+
+        sharedViewModel.data.observe(viewLifecycleOwner,  Observer {
+            // 데이터 업데이트 시 처리할 작업
+            binding?.bpmChatTxt!!.text = sharedViewModel.data.value}
+        )
 
         binding?.btnSpeech!!.setOnClickListener {
             // 새 SpeechRecognizer 를 만드는 팩토리 메서드
@@ -116,16 +106,10 @@ class chatFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        //_binding= FragmentChatBinding.inflate(inflater,container,false)
-
         val fragmentBinding = FragmentChatBinding.inflate(inflater, container, false)
         binding = fragmentBinding
 
-
         return fragmentBinding.root
-
-        return inflater.inflate(R.layout.fragment_chat, container, false)
     }
 
 
@@ -157,7 +141,6 @@ class chatFragment : Fragment() {
     private val recognitionListener: RecognitionListener = object : RecognitionListener {
         // 말하기 시작할 준비가되면 호출
         override fun onReadyForSpeech(params: Bundle) {
-            //Toast.makeText(applicationContext, "음성인식 시작", Toast.LENGTH_SHORT).show()
             Toast.makeText(requireContext(), "음성인식 시작", Toast.LENGTH_SHORT).show()
             binding?.tvState!!.text = "이제 말씀하세요!"
         }
@@ -204,12 +187,10 @@ class chatFragment : Fragment() {
     }
 
     private fun clickEvents() {
-
         //Send a message
         btn_send.setOnClickListener {
             sendMessage()
         }
-
         //Scroll back to correct position when user clicks on text view
         et_message.setOnClickListener {
             GlobalScope.launch {
@@ -217,7 +198,6 @@ class chatFragment : Fragment() {
 
                 withContext(Dispatchers.Main) {
                     rv_messages.scrollToPosition(adapter.itemCount - 1)
-
                 }
             }
         }
@@ -226,9 +206,7 @@ class chatFragment : Fragment() {
     private fun recyclerView() {
         adapter = MessagingAdapter()
         rv_messages.adapter = adapter
-        //rv_messages.layoutManager = LinearLayoutManager(applicationContext)
         rv_messages.layoutManager = LinearLayoutManager(requireContext())
-
     }
 
     override fun onStart() {
@@ -274,7 +252,6 @@ class chatFragment : Fragment() {
                 Chatbotlist(message);
                 response=chatresponse;
 
-
                 //Adds it to our local list
 
                 //messagesList.add(Message(response, RECEIVE_ID, timeStamp))
@@ -309,7 +286,6 @@ class chatFragment : Fragment() {
     }
 
     private fun customBotMessage(message: String) {
-
         GlobalScope.launch {
             delay(1000)
             withContext(Dispatchers.Main) {
@@ -329,18 +305,14 @@ class chatFragment : Fragment() {
 
     private suspend fun Chatbotlist(s: String) {
         withContext(Dispatchers.IO) {
-
             runCatching {
                 val retrofit = RetrofitBuilder.chatbotapi.getKobertResponse(s)
                 val res = retrofit.execute().body()
                 //Toast.makeText(requireContext(), res?.answer, Toast.LENGTH_SHORT).show()
                 //res.code() == 200
-                println("res = ${res}")
                 Log.v("태그", "${res}")
                 chatresponse= res!!.answer
             }.getOrDefault(false)
         }
-
     }
-
 }

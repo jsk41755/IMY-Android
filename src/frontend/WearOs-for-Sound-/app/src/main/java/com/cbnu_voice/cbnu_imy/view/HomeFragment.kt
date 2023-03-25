@@ -34,7 +34,6 @@ class HomeFragment : Fragment(){
         val fragmentBinding = FragmentHomeBinding.inflate(inflater, container, false)
         binding = fragmentBinding
 
-
         return fragmentBinding.root
     }
 
@@ -46,12 +45,6 @@ class HomeFragment : Fragment(){
             binding?.messagelogTextView2!!.text = sharedViewModel.data.value
             sharedViewModel.data.value?.let { bpmText(it) }
         })
-
-        /*binding?.apply {
-            lifecycleOwner = viewLifecycleOwner
-            viewModel = sharedViewModel
-            homeFragment = this@HomeFragment
-        }*/
     }
 
     private fun bpmText(bpm: String){
