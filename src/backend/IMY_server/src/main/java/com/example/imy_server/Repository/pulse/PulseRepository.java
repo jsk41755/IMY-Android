@@ -16,4 +16,7 @@ import java.util.List;
 public interface PulseRepository extends JpaRepository<Pulse, Long> {
     List<Pulse> findAll();
 
+    @Query("SELECT AVG(p.pulseValue) FROM Pulse p WHERE p.pulseDate.createdDate = :date")
+    String GetAvgPulseValueByDate(LocalDate date);
+
 }

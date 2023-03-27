@@ -1,8 +1,10 @@
 package com.example.imy_server.Service;
 
+import com.example.imy_server.Domain.Pulse.AvgPulse;
 import com.example.imy_server.Domain.Pulse.Pulse;
 import com.example.imy_server.Domain.Pulse.PulseDate;
 import com.example.imy_server.Dto.Pulse.DailyPulseDto;
+import com.example.imy_server.Repository.pulse.AvgPulseRepository;
 import com.example.imy_server.Repository.pulse.PulseDateRepository;
 import com.example.imy_server.Repository.pulse.PulseRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
 public class PulseService {
     private final PulseRepository pulseRepository;
     private final PulseDateRepository pulseDateRepository;
-
+    private final AvgPulseRepository avgPulseRepository;
     /**
      * 모든 맥박을 가져오기 위한 함수
      * @return
@@ -59,7 +61,14 @@ public class PulseService {
                 pulse.setPulseDate(pulseDate);
                 pulseList.add(pulse);
             }
+
+            //맥박 리스트 저장
             pulseRepository.saveAllAndFlush(pulseList);
+            //변경된 맥박 값 평균 가져옴
+            String dailyAvgPulse = pulseRepository.GetAvgPulseValueByDate(date);
+            //맥박값 평균 저장
+            avgPulseRepository.UpdatePulseByAvgSeq(dailyAvgPulse,pulseDate, pulseDate.getDateSeq());
+
         }else{ //날짜가 존재하지 않으면 해당하는 맥박과 해당하는 날짜를 넣음
             PulseDate pulseDate = new PulseDate(date);
             List<Pulse> pulseList = new ArrayList<>();
@@ -71,8 +80,13 @@ public class PulseService {
                 pulse.setPulseDate(pulseDate);
                 pulseList.add(pulse);
             }
+            //맥박 리스트 저장
             pulseRepository.saveAllAndFlush(pulseList);
+            //변경된 맥박 값 평균 가져옴
+            String dailyAvgPulse = pulseRepository.GetAvgPulseValueByDate(date);
+            //맥박값 평균 저장
+            avgPulseRepository.UpdatePulseByAvgSeq(dailyAvgPulse,pulseDate, pulseDate.getDateSeq());
+
         }
     }
-
 }
