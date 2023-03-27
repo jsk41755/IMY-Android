@@ -1,17 +1,16 @@
 package com.example.imy_server.Controller;
 
 import com.example.imy_server.Domain.Pulse.Pulse;
-import com.example.imy_server.Domain.Pulse.PulseDate;
+import com.example.imy_server.Dto.Pulse.AvgPulseDto;
+import com.example.imy_server.Dto.Pulse.DailyAvgPulseDto;
 import com.example.imy_server.Dto.Pulse.DailyPulseDto;
-import com.example.imy_server.Service.AvgPulseService;
 import com.example.imy_server.Service.PulseService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/pulse")
@@ -19,8 +18,11 @@ import java.util.Map;
 public class PulseController {
 
     private final PulseService pulseService;
-    private final AvgPulseService avgPulseService;
 
+    /**
+     * 일별 측정된 모든 맥박값을 가져오는 함수
+     * @return
+     */
     @GetMapping("/total")
     public List<DailyPulseDto> GetPulse(){
 
@@ -28,6 +30,10 @@ public class PulseController {
         return pulseService.getAllPulseByDate();
     }
 
+    /**
+     * 주기별로 측정된 모든 맥박값을 날짜에 맞게 저장하는 함수.
+     * @param dailyPulseDto
+     */
     @PostMapping("/total")
     public void InsertPulse(@RequestBody DailyPulseDto dailyPulseDto){
 
@@ -35,10 +41,8 @@ public class PulseController {
         List<Pulse> pulses = dailyPulseDto.getPulseList();
         //맥박이 측정된 날짜
         LocalDate pdate = dailyPulseDto.getCreatedDate();
-        //일일 모든 맥박 저장
+        //일일 모든 맥박 저장 및 일일 평균 맥박 저장
         pulseService.insertPulse(pulses,pdate);
-        //일일 평균 맥박 저장
-        avgPulseService.insertAvgPulse(pulses,pdate);
     }
 
     /**
@@ -54,7 +58,17 @@ public class PulseController {
      * 일일 평균 맥박 가져오기
      */
     @GetMapping("/daily/avg/{date}")
-    public void GetDailyAvgPulse(@PathVariable("date") LocalDate date){
+    public AvgPulseDto GetDailyAvgPulse(
+        @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+        return pulseService.getDailyAvgPulse(date);
+    }
 
+    /**
+     * 전체 일일 평균 맥박 가져오기
+     * @return
+     */
+    @GetMapping("/daily/avg/all")
+    public List<DailyAvgPulseDto> GetAllDailyAvgPulse(){
+        return pulseService.getAllDailyAvgPulse();
     }
 }

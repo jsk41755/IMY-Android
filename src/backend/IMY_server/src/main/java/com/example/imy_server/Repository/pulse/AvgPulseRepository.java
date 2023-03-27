@@ -21,4 +21,10 @@ public interface AvgPulseRepository extends JpaRepository<AvgPulse,Long> {
             "WHERE ap.avgSeq = :dateSeq "
     )
     void UpdatePulseByAvgSeq(String avgValue, PulseDate pulseDate, Long dateSeq);
+
+    @Query("SELECT ap.avgValue " +
+           "FROM AvgPulse ap " +
+           "WHERE ap.pulseDate.createdDate = :date"
+    )
+    String findDailyAvgPulseByDate(LocalDate date);
 }
