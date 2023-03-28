@@ -1,6 +1,5 @@
 package com.example.imy_server.Domain.Pulse;
 
-import com.example.imy_server.Dto.Pulse.PulseDto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalTime;
-import java.util.List;
 
 
 @Entity
