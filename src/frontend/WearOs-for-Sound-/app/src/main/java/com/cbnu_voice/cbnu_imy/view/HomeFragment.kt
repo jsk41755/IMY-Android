@@ -1,14 +1,20 @@
 package com.cbnu_voice.cbnu_imy.view
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.cbnu_voice.cbnu_imy.FragmentActivity
 import com.cbnu_voice.cbnu_imy.R
@@ -45,6 +51,7 @@ class HomeFragment : Fragment(){
             binding?.messagelogTextView2!!.text = sharedViewModel.data.value
             sharedViewModel.data.value?.let { bpmText(it) }
         })
+
     }
 
     private fun bpmText(bpm: String){

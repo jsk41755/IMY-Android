@@ -6,7 +6,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/framelayout"
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:navGraph="@navigation/nav_graph"
+        app:defaultNavHost="true"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +26,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/framelayout"
+        app:layout_constraintTop_toBottomOf="@+id/nav_host_fragment"
         app:itemIconTint="@drawable/menu_selector_color"
         android:background="@color/white"
         app:itemIconSize="35dp"

@@ -2,15 +2,21 @@ package com.cbnu_voice.cbnu_imy
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.cbnu_voice.cbnu_imy.view.*
@@ -54,6 +60,7 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         setContentView(binding.root)
         replaceFragment(HomeFragment())
 
+
         binding.bottomNav.selectedItemId = R.id.menu_home
 
         binding.bottomNav.setOnItemSelectedListener {
@@ -77,13 +84,27 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
         sharedViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
+        sharedViewModel.bpmStack.observe(this) {
+            if (sharedViewModel.bpmStack.value == 5) {
+                AlertDialog.Builder(this)
+                    .setTitle("잠깐 운동중이신가요??")
+                    .setMessage("저와 이야기를 나누고 싶으면 말씀하세요!")
+                    .setPositiveButton("네"
+                    ) { _, _ -> binding.bottomNav.selectedItemId = R.id.menu_chat }
+                    .setNegativeButton("아니오"
+                    ) { _, _ -> }
+                    .create()
+                    .show()
+
+            }
+        }
 
     }
 
     private fun replaceFragment(fragment: Fragment){
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.framelayout, fragment)
+        fragmentTransaction.replace(R.id.nav_host_fragment, fragment)
         fragmentTransaction.commit()
     }
 
@@ -292,6 +313,7 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     bpmPrint = s.substring(0 until 2)
                     beforeBpm.setLength(0)
                     sharedViewModel.setBpm(bpmPrint)
+                    sharedViewModel.bpmStack(1)
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -320,6 +342,8 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+
     }
 
 }

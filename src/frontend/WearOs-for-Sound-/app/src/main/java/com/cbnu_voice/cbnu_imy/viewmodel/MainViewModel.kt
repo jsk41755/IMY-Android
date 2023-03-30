@@ -7,17 +7,25 @@ import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
     private val _data = MutableLiveData<String>()
-
-    /***
-     * activity bpm.
-     */
     val data: LiveData<String> = _data
 
-    private val _bpmStack = MutableLiveData<Int>()
-    val bpmStack: LiveData<Int> = _bpmStack
+    private val _bpmStack = MutableLiveData<Int>(0)
+    var bpmStack: LiveData<Int> = _bpmStack
 
-    fun hasNoCheckBpm(): Boolean { //주문의 맛이 설정되었는지 여부 확인하는 메서드
+    fun hasNoCheckBpm(): Boolean {
         return _data.value.isNullOrEmpty()
+    }
+
+    fun bpmStack(count : Int){
+        if(_bpmStack.value?.toInt()!! < 10){
+            _bpmStack.value = _bpmStack.value!! + count
+            Log.d("stack1", _bpmStack.value.toString())
+        }
+        else{
+            _bpmStack.value = 0
+            Log.d("stack2", _bpmStack.value.toString())
+        }
+
     }
 
     fun getBpm(): LiveData<String> = data
@@ -27,14 +35,6 @@ class MainViewModel : ViewModel() {
      */
     fun setBpm(numberBpm : String?){
         var intData = numberBpm?.toInt()
-        Log.d("aaa", " ${data.value}")
-        /*if (bpmStack > 10) {
-            //startActivity(Intent(this, Chatbot::class.java).putExtra("stage", "refuse"))
-        }
-
-        if (intData.toFloat() > 40.0) {
-            bpmStack++
-        }*/
 
         _data.value = intData.toString()
     }
