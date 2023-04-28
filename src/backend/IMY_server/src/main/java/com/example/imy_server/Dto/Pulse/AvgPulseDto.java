@@ -9,10 +9,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class AvgPulseDto {
     private LocalDate createdDate;
-    private String avgValue;
+    private String averageValue;
 
-    public AvgPulseDto(LocalDate createdDate, String avgValue) {
+    public AvgPulseDto(LocalDate createdDate, String averageValue) {
         this.createdDate = createdDate;
-        this.avgValue = avgValue;
+        this.averageValue = averageValue;
     }
 }
