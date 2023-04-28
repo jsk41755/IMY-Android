@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class MainViewModel : ViewModel() {
-    private val _data = MutableLiveData<String>()
-    val data: LiveData<String> = _data
+    private var _data = MutableLiveData<String>()
+    var data: LiveData<String> = _data
 
     private val _bpmStack = MutableLiveData<Int>(0)
     var bpmStack: LiveData<Int> = _bpmStack
@@ -22,7 +22,7 @@ class MainViewModel : ViewModel() {
             Log.d("stack1", _bpmStack.value.toString())
         }
         else{
-            _bpmStack.value = 0
+            //_bpmStack.value = 0
             Log.d("stack2", _bpmStack.value.toString())
         }
 

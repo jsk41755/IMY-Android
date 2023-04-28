@@ -311,6 +311,14 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     beforeBpm.append("BPM")
 
                     bpmPrint = s.substring(0 until 2)
+
+                    /*if (s.toInt()/100 == 0){
+                        bpmPrint = s.substring(0 until 2)
+                    }
+                    else{
+                        bpmPrint = s.substring(0 until 3)
+                    }*/
+
                     beforeBpm.setLength(0)
                     sharedViewModel.setBpm(bpmPrint)
                     sharedViewModel.bpmStack(1)

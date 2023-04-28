@@ -5,10 +5,8 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import com.cbnu_voice.cbnu_imy.Api.Pulse.PulseBuilder
-import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
+import com.cbnu_voice.cbnu_imy.Api.Pulse.PulseClient
 import com.cbnu_voice.cbnu_imy.Data.Pulse
-import com.cbnu_voice.cbnu_imy.Data.User
 import com.cbnu_voice.cbnu_imy.Dto.Pulse.DailyPulseDto
 import com.cbnu_voice.cbnu_imy.databinding.ActivityPulseBinding
 import retrofit2.Call
@@ -63,10 +61,10 @@ class PulseAction : AppCompatActivity() {
             )
 
             // test 값을 넣어 주었다.
-            PostDailyPulse(test)
+            //PostDailyPulse(test)
         }
         binding.testGetPulse.setOnClickListener {
-            GetPulseList() //맥박 조회
+            //GetPulseList() //맥박 조회
         }
 
 
@@ -75,9 +73,9 @@ class PulseAction : AppCompatActivity() {
     /**
      * daily pulse를 post 할 때 사용되는 함수
      */
-    fun PostDailyPulse(dailyPulse: DailyPulseDto){
+    /*fun PostDailyPulse(dailyPulse: DailyPulseDto){
         val textviewresult= binding.textViewResult
-        val pulseList = PulseBuilder.pulseApi.postPulseResponse(dailyPulse)
+        val pulseList = PulseClient.pulseApi.postPulseResponse(dailyPulse)
         pulseList.enqueue(object : Callback<DailyPulseDto>{
             override fun onResponse(
                 call: Call<DailyPulseDto>,
@@ -97,20 +95,20 @@ class PulseAction : AppCompatActivity() {
             }
         })
 
-    }
+    }*/
 
     /**
      * 리스트 형식으로 DailyPulseDto 형식에 맞는 데이터를 가져온다.
      */
-    fun GetPulseList(){
+    /*fun GetPulseList(){
         val textviewresult= binding.textViewResult
-        val pulseList = PulseBuilder.pulseApi.getPulseResponse()
+        val pulseList = PulseClient.pulseApi.getPulseResponse()
         pulseList.enqueue(object : Callback<List<DailyPulseDto>> { // 비동기 방식 통신 메소드
             override fun onResponse( // 통신에 성공한 경우
                 call: Call<List<DailyPulseDto>>,
                 response: Response<List<DailyPulseDto>>
             ) {
-                if(response.isSuccessful()){ // 응답 잘 받은 경우
+                if(response.isSuccessful){ // 응답 잘 받은 경우
                     for (d in response.body()!!) {
                         val date = d.createdDate
                         val pulselist = d.pulseList
@@ -118,7 +116,7 @@ class PulseAction : AppCompatActivity() {
 
                     }
                     Log.d("respnose: ", response.body().toString())
-                    textviewresult.setText(response.body().toString())
+                    textviewresult.text = response.body().toString()
 
                 }else{
                     // 통신 성공 but 응답 실패
@@ -132,5 +130,5 @@ class PulseAction : AppCompatActivity() {
             }
 
         })
-    }
+    }*/
 }

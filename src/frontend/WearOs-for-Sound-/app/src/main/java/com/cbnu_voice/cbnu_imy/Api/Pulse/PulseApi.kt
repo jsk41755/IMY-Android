@@ -1,10 +1,12 @@
 package com.cbnu_voice.cbnu_imy.Api.Pulse
 
 import com.cbnu_voice.cbnu_imy.Dto.Pulse.DailyPulseDto
+import com.cbnu_voice.cbnu_imy.Utils.API
+import com.google.gson.JsonElement
 import retrofit2.Call
 import retrofit2.http.*
 
-public interface PulseApi {
+interface PulseApi {
 
     /**
      * POST 방식, @POST(URI)
@@ -23,6 +25,8 @@ public interface PulseApi {
     @Headers("accept: application/json",
         "content-type: application/json")
     fun getPulseResponse(): Call<List<DailyPulseDto>>
+    @GET(API.GET_PULSE_AVG)
+    fun getPulseAvgResponse(): Call<JsonElement>
 
 
 }

@@ -15,10 +15,11 @@ object RetrofitBuilder {
     val houseip="http://113.198.137.200:4511"
     val localhost="http://10.0.2.2:5000"
     val pulseApihost = "http://172.17.0.4:8083"
+    val nova="http://192.168.30.55:5000"
     init{
         println("connected")
         val retrofit= Retrofit.Builder()
-            .baseUrl(localhost)   //요청 보내는 API 서버 url /로 끝나야 함
+            .baseUrl(nova)   //요청 보내는 API 서버 url /로 끝나야 함
             .addConverterFactory(ScalarsConverterFactory.create() )
             .addConverterFactory(GsonConverterFactory.create())//Gson을 역직렬화
             .build()
