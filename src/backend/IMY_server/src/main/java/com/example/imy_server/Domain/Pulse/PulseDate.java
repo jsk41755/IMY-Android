@@ -21,9 +21,24 @@ public class PulseDate {
 
     private LocalDate createdDate;
 
+    /**
+     * 측정맥박은 하루에 여러개일 수 있다.
+     */
     @JsonManagedReference
-    @OneToMany(mappedBy = "pulseDate",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pulseDate",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
     private List<Pulse> pulse = new ArrayList<>();
+    /**
+     * 이상맥박은 하루에 여러개일 수 있다
+     */
+    @JsonManagedReference
+    @OneToMany(mappedBy = "pulseDate",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+    private List<StrangePulse> strPulse = new ArrayList<>();
+    /**
+     * 평균맥박은 하루에 하나만 존재한다.
+     */
+    @JsonManagedReference
+    @OneToOne(mappedBy = "pulseDate",fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval=true)
+    private AvgPulse avgPulse = new AvgPulse();
 
     public PulseDate(LocalDate createdDate) {
         this.createdDate = createdDate;

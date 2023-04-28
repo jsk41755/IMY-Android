@@ -8,26 +8,23 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.time.LocalTime;
 
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-public class Pulse {
-
+public class StrangePulse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pulseSeq;
+    private Long strSeq;
     private LocalTime createdTime;
-    private String pulseValue;
-
+    private String strValue;
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="dateSeq")
     private PulseDate pulseDate;
 
-    public Pulse(LocalTime createdTime, String pulseValue) {
+    public StrangePulse(LocalTime createdTime, String strValue) {
         this.createdTime = createdTime;
-        this.pulseValue = pulseValue;
+        this.strValue = strValue;
     }
 }
