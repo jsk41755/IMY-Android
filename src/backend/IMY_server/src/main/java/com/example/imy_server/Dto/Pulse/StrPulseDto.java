@@ -7,12 +7,12 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
-public class AvgPulseDto {
+public class StrPulseDto {
     private LocalDate createdDate;
-    private String avgValue;
+    private String strValue;
 
-    public AvgPulseDto(LocalDate createdDate, String avgValue) {
+    public StrPulseDto(LocalDate createdDate, String strValue) {
         this.createdDate = createdDate;
-        this.avgValue = avgValue;
+        this.strValue = strValue;
     }
 }

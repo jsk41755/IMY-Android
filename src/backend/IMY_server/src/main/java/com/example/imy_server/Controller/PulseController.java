@@ -1,9 +1,8 @@
 package com.example.imy_server.Controller;
 
 import com.example.imy_server.Domain.Pulse.Pulse;
-import com.example.imy_server.Dto.Pulse.AvgPulseDto;
-import com.example.imy_server.Dto.Pulse.DailyAvgPulseDto;
-import com.example.imy_server.Dto.Pulse.DailyPulseDto;
+import com.example.imy_server.Domain.Pulse.StrangePulse;
+import com.example.imy_server.Dto.Pulse.*;
 import com.example.imy_server.Service.PulseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +26,7 @@ public class PulseController {
     public List<DailyPulseDto> GetPulse(){
 
         //pulseDto 값에 맞게 pulse 값을 뽑음.
-        return pulseService.getAllPulseByDate();
+        return pulseService.getAllDailyPulse();
     }
 
     /**
@@ -35,7 +34,7 @@ public class PulseController {
      * @param dailyPulseDto
      */
     @PostMapping("/total")
-    public void InsertPulse(@RequestBody DailyPulseDto dailyPulseDto){
+    public void PostPulse(@RequestBody DailyPulseDto dailyPulseDto){
 
         //리스트 형태의 시간당 맥박들
         List<Pulse> pulses = dailyPulseDto.getPulseList();
@@ -70,5 +69,28 @@ public class PulseController {
     @GetMapping("/daily/avg/all")
     public List<DailyAvgPulseDto> GetAllDailyAvgPulse(){
         return pulseService.getAllDailyAvgPulse();
+    }
+
+    /**
+     * 총 발생 이상값 저장.
+     */
+    @PostMapping("/total/str")
+    public void PostDailyStrangePulse(@RequestBody DailyStrangePulseDto dailyStrangePulseDto){
+
+        //리스트 형태의 시간당 이상맥박들
+        List<StrangePulse> pulses = dailyStrangePulseDto.getPulseList();
+        //이상맥박이 측정된 날짜
+        LocalDate pdate = dailyStrangePulseDto.getCreatedDate();
+        //일일 모든 이상맥박 저장
+        pulseService.insertDailyStrangePulse(pulses, pdate);
+
+    }
+    @GetMapping("/daily/str")
+    public List<DailyStrangePulseDto> GetAllDailyStrangePulse(){
+        return pulseService.GetAllDailyStrangePulse();
+    }
+    @GetMapping("/daily/str/cnt/{date}")
+    public StrPulseDto GetDailyStrPulseCnt(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
+        return pulseService.CountDailyStrangePulse(date);
     }
 }
