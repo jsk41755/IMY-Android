@@ -14,6 +14,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.media.SoundPool
 import android.net.Uri
 import android.os.Build
@@ -31,6 +32,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
 import androidx.lifecycle.Observer
+import com.cbnu_voice.cbnu_imy.Api.TTS.TtsManager
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_SEARCH
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
@@ -61,6 +63,8 @@ class chatFragment : Fragment() {
 
     private var binding: FragmentChatBinding? = null
 
+    private var mediaPlayer: MediaPlayer? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -69,13 +73,14 @@ class chatFragment : Fragment() {
 
         sharedViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
+        /*
         customBotMessage("안녕! , 오늘 기분은 어때?")
             GlobalScope.launch {
                 delay(1000)
                 withContext(Dispatchers.Main) {
                     rv_messages.scrollToPosition(adapter.itemCount - 1)
                 }
-            }
+            }*/
 
     }
 
@@ -214,6 +219,8 @@ class chatFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+
+        StartAudioStreaming()
         //In case there are messages, scroll to bottom when re-opening app
         GlobalScope.launch {
             delay(100)
@@ -221,6 +228,27 @@ class chatFragment : Fragment() {
                 rv_messages.scrollToPosition(adapter.itemCount - 1)
             }
         }
+    }
+
+    private fun StartAudioStreaming() {
+        val url = "http://49.143.65.133:15605/tts-server/api/glowtts?text=방승재는 바보다!!!!"
+        val mediaPlayer = MediaPlayer().apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build()
+            )
+            setDataSource(url)
+            prepareAsync()
+            setOnPreparedListener { mp ->
+                mp.start()
+            }
+            setOnErrorListener { mp, what, extra ->
+                // 오류 처리 로직을 구현합니다.
+                false
+            }
+        }
+        this.mediaPlayer = mediaPlayer
     }
 
     private fun sendMessage() {
