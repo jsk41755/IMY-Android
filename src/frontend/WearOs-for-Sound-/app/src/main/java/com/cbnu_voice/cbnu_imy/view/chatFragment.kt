@@ -231,7 +231,7 @@ class chatFragment : Fragment() {
     }
 
     private fun StartAudioStreaming() {
-        val url = "http://49.143.65.133:15605/tts-server/api/glowtts?text=방승재는 바보다!!!!"
+        val url = "IP주소"
         val mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
