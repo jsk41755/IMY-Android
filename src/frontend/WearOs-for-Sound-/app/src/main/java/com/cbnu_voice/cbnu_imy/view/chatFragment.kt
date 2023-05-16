@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
 import androidx.lifecycle.Observer
 import com.cbnu_voice.cbnu_imy.Api.TTS.TtsManager
+import com.cbnu_voice.cbnu_imy.BuildConfig
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_SEARCH
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
@@ -72,15 +73,13 @@ class chatFragment : Fragment() {
         setAlarm()
 
         sharedViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-
-        /*
-        customBotMessage("안녕! , 오늘 기분은 어때?")
+        StartAudioStreaming("안녕! , 오늘 기분은 어때?")
             GlobalScope.launch {
                 delay(1000)
                 withContext(Dispatchers.Main) {
                     rv_messages.scrollToPosition(adapter.itemCount - 1)
                 }
-            }*/
+            }
 
     }
 
@@ -220,7 +219,6 @@ class chatFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        StartAudioStreaming()
         //In case there are messages, scroll to bottom when re-opening app
         GlobalScope.launch {
             delay(100)
@@ -230,8 +228,8 @@ class chatFragment : Fragment() {
         }
     }
 
-    private fun StartAudioStreaming() {
-        val url = "IP주소"
+    private fun StartAudioStreaming(s: String) {
+        val url = BuildConfig.TTS_API_KEY + s
         val mediaPlayer = MediaPlayer().apply {
             setAudioAttributes(
                 AudioAttributes.Builder()
