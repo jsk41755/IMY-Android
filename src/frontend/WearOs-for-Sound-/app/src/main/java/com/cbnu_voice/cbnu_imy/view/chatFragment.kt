@@ -72,8 +72,6 @@ class chatFragment : Fragment() {
 
     private var binding: FragmentChatBinding? = null
 
-    private var mediaPlayer: MediaPlayer? = null
-
     private lateinit var player: ExoPlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
