@@ -80,7 +80,6 @@ class chatFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         requestPermission()
-        //setAlarm()
 
         val coroutineScope = CoroutineScope(Dispatchers.IO)
 
