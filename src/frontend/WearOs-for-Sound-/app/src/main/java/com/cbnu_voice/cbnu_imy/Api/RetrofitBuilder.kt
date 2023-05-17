@@ -1,6 +1,7 @@
 package com.cbnu_voice.cbnu_imy.Api
 
 import com.cbnu_voice.cbnu_imy.Api.Pulse.PulseApi
+import com.cbnu_voice.cbnu_imy.BuildConfig
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
@@ -15,7 +16,7 @@ object RetrofitBuilder {
     val houseip="http://113.198.137.200:4511"
     val localhost="http://10.0.2.2:5000"
     val pulseApihost = "http://172.17.0.4:8083"
-    val nova="http://192.168.30.55:5000"
+    val nova = BuildConfig.NOVA
     init{
         println("connected")
         val retrofit= Retrofit.Builder()

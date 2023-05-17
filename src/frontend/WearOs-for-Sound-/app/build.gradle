@@ -17,6 +17,7 @@ android {
         versionName "2.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "TTS_API_KEY", properties['TTS_API_KEY']
+        buildConfigField "String", "NOVA", properties['NOVA']
     }
     
     buildFeatures {
@@ -97,4 +98,10 @@ dependencies {
 
     def mpChartVersion = "v3.1.0"
     implementation "com.github.PhilJay:MPAndroidChart:$mpChartVersion"
+
+    def ExoPlayer = "2.18.6"
+    implementation "com.google.android.exoplayer:exoplayer:$ExoPlayer"
+    implementation "com.google.android.exoplayer:exoplayer-core:$ExoPlayer"
+    implementation "com.google.android.exoplayer:exoplayer-dash:$ExoPlayer"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$ExoPlayer"
 }

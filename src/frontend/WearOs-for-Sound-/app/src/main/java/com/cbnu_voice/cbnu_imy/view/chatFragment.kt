@@ -41,6 +41,14 @@ import com.cbnu_voice.cbnu_imy.Utils.Constants.SEND_ID
 import com.cbnu_voice.cbnu_imy.Utils.Time
 import com.cbnu_voice.cbnu_imy.databinding.FragmentChatBinding
 import com.cbnu_voice.cbnu_imy.viewmodel.MainViewModel
+import com.google.android.exoplayer2.DefaultRenderersFactory
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.coroutines.*
 import retrofit2.Call
@@ -66,15 +74,19 @@ class chatFragment : Fragment() {
 
     private var mediaPlayer: MediaPlayer? = null
 
+    private lateinit var player: ExoPlayer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         requestPermission()
-        setAlarm()
+        //setAlarm()
+
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
 
         sharedViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        StartAudioStreaming("안녕! , 오늘 기분은 어때?")
-            GlobalScope.launch {
+            coroutineScope.launch {
+                customBotMessage("안녕! , 오늘 기분은 어때?")
                 delay(1000)
                 withContext(Dispatchers.Main) {
                     rv_messages.scrollToPosition(adapter.itemCount - 1)
@@ -230,23 +242,30 @@ class chatFragment : Fragment() {
 
     private fun StartAudioStreaming(s: String) {
         val url = BuildConfig.TTS_API_KEY + s
-        val mediaPlayer = MediaPlayer().apply {
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build()
-            )
-            setDataSource(url)
-            prepareAsync()
-            setOnPreparedListener { mp ->
-                mp.start()
-            }
-            setOnErrorListener { mp, what, extra ->
-                // 오류 처리 로직을 구현합니다.
-                false
+
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+
+        coroutineScope.launch {
+            // ExoPlayer.Builder를 사용하여 ExoPlayer 인스턴스 생성
+            val builder = ExoPlayer.Builder(requireContext(), DefaultRenderersFactory(requireContext()))
+            player = builder.setTrackSelector(DefaultTrackSelector(requireContext()))
+                .build()
+
+            val mediaItem = MediaItem.fromUri(Uri.parse(url))
+
+            val mediaSource = ProgressiveMediaSource.Factory(
+                DefaultDataSourceFactory(requireContext(), "exoplayer-sample")
+            ).createMediaSource(mediaItem)
+
+            withContext(Dispatchers.Main){
+                // ExoPlayer에 MediaSource 설정
+                player.setMediaSource(mediaSource)
+                // 재생 시작
+                //player.playWhenReady = true
+                player.prepare()
+                player.play()
             }
         }
-        this.mediaPlayer = mediaPlayer
     }
 
     private fun sendMessage() {
@@ -270,9 +289,10 @@ class chatFragment : Fragment() {
 
         val timeStamp = Time.timeStamp()
 
-        GlobalScope.launch {
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+        coroutineScope.launch {
             //Fake response delay
-            delay(1000)
+            //delay(1000)
             var response=""
 
             withContext(Dispatchers.Main) {
@@ -307,9 +327,7 @@ class chatFragment : Fragment() {
                     }
 
                 }
-
-                textToSpeech?.speak(response, TextToSpeech.QUEUE_FLUSH, null)
-                textToSpeech?.playSilentUtterance(750,TextToSpeech.QUEUE_ADD,null) // deley시간 설정
+                StartAudioStreaming(response)
             }
         }
     }
@@ -324,14 +342,10 @@ class chatFragment : Fragment() {
 
                 rv_messages.scrollToPosition(adapter.itemCount - 1)
 
-                textToSpeech?.speak(message, TextToSpeech.QUEUE_FLUSH, null)
-                textToSpeech?.playSilentUtterance(750,TextToSpeech.QUEUE_ADD,null) // deley시간 설정
+                StartAudioStreaming(message)
             }
         }
     }
-
-
-
     private suspend fun Chatbotlist(s: String) {
         withContext(Dispatchers.IO) {
             runCatching {
@@ -343,5 +357,11 @@ class chatFragment : Fragment() {
                 chatresponse= res!!.answer
             }.getOrDefault(false)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        player.release()
     }
 }
