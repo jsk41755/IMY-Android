@@ -18,6 +18,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "TTS_API_KEY", properties['TTS_API_KEY']
         buildConfigField "String", "NOVA", properties['NOVA']
+        buildConfigField "String", "NAVER_CLOVA_VOICE_ID", properties['NAVER_CLOVA_VOICE_ID']
+        buildConfigField "String", "NAVER_CLOVA_VOICE_API", properties['NAVER_CLOVA_VOICE_API']
     }
     
     buildFeatures {

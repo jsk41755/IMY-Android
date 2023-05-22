@@ -6,19 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.cbnu_voice.cbnu_imy.Data.Message
-import com.cbnu_voice.cbnu_imy.Dto.CorpusDto
-import com.cbnu_voice.cbnu_imy.R
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.AudioAttributes
-import android.media.MediaPlayer
-import android.media.SoundPool
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -32,7 +25,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
 import androidx.lifecycle.Observer
-import com.cbnu_voice.cbnu_imy.Api.TTS.TtsManager
+import com.cbnu_voice.cbnu_imy.Api.Clova.fetchAudioUrl
 import com.cbnu_voice.cbnu_imy.BuildConfig
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_SEARCH
@@ -44,16 +37,17 @@ import com.cbnu_voice.cbnu_imy.viewmodel.MainViewModel
 import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import java.io.File
 import java.util.*
 
 
@@ -73,7 +67,6 @@ class chatFragment : Fragment() {
     private var binding: FragmentChatBinding? = null
 
     private lateinit var player: ExoPlayer
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -82,8 +75,9 @@ class chatFragment : Fragment() {
         val coroutineScope = CoroutineScope(Dispatchers.IO)
 
         sharedViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+
             coroutineScope.launch {
-                customBotMessage("안녕! , 오늘 기분은 어때?")
+                customBotMessage("안녕? 오늘 기분은 어때?")
                 delay(1000)
                 withContext(Dispatchers.Main) {
                     rv_messages.scrollToPosition(adapter.itemCount - 1)
@@ -128,18 +122,6 @@ class chatFragment : Fragment() {
         return fragmentBinding.root
     }
 
-
-    private fun setAlarm() {
-        textToSpeech = TextToSpeech(requireContext(), TextToSpeech.OnInitListener {
-            if (it == TextToSpeech.SUCCESS) {
-                val result = textToSpeech!!.setLanguage(Locale.KOREAN)
-                if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                    Log.e("TTS","해당언어는 지원되지 않습니다.")
-                    return@OnInitListener
-                }
-            }
-        })
-    }
 
     // 권한 설정 메소드
     private fun requestPermission() {
@@ -237,11 +219,10 @@ class chatFragment : Fragment() {
         }
     }
 
-    private fun StartAudioStreaming(s: String) {
+    private fun startAudioStreaming(s: String) {
         val url = BuildConfig.TTS_API_KEY + s
 
         val coroutineScope = CoroutineScope(Dispatchers.IO)
-
         coroutineScope.launch {
             // ExoPlayer.Builder를 사용하여 ExoPlayer 인스턴스 생성
             val builder = ExoPlayer.Builder(requireContext(), DefaultRenderersFactory(requireContext()))
@@ -264,6 +245,41 @@ class chatFragment : Fragment() {
             }
         }
     }
+    private fun naverClovaVoice(message: String) {
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+        coroutineScope.launch {
+            val builder = ExoPlayer.Builder(requireContext(), DefaultRenderersFactory(requireContext()))
+            player = builder.setTrackSelector(DefaultTrackSelector(requireContext()))
+                .build()
+
+            // Fetch audio URL using fetchAudioUrl function
+            val audioUrl = fetchAudioUrl(requireContext(), message, "nyuna")
+            var filePath: String? = null
+
+            val mediaItem = MediaItem.fromUri(Uri.fromFile(File(audioUrl)))
+
+            val mediaSource = ProgressiveMediaSource.Factory(
+                DefaultDataSourceFactory(requireContext(), "exoplayer-sample")
+            ).createMediaSource(mediaItem)
+
+            withContext(Dispatchers.Main) {
+                filePath = audioUrl
+
+                player.setMediaSource(mediaSource)
+                player.prepare()
+                player.play()
+
+                player.addListener(object : Player.Listener {
+                    override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                        if (playbackState == Player.STATE_ENDED) {
+                            val outputFile = filePath?.let { File(it) }
+                            outputFile?.delete()
+                        }
+                    }
+                })
+            }
+        }
+    }
 
     private fun sendMessage() {
         val message = et_message.text.toString()
@@ -281,7 +297,6 @@ class chatFragment : Fragment() {
 
         }
     }
-
     private fun botResponse(message: String) {
 
         val timeStamp = Time.timeStamp()
@@ -324,7 +339,8 @@ class chatFragment : Fragment() {
                     }
 
                 }
-                StartAudioStreaming(response)
+                //startAudioStreaming(response)
+                naverClovaVoice(response)
             }
         }
     }
@@ -332,17 +348,20 @@ class chatFragment : Fragment() {
     private fun customBotMessage(message: String) {
         GlobalScope.launch {
             delay(1000)
-            withContext(Dispatchers.Main) {
+            withContext(Dispatchers.IO) {
                 val timeStamp = Time.timeStamp()
                 messagesList.add(Message(message, RECEIVE_ID, timeStamp))
                 adapter.insertMessage(Message(message, RECEIVE_ID, timeStamp))
 
                 rv_messages.scrollToPosition(adapter.itemCount - 1)
 
-                StartAudioStreaming(message)
+                naverClovaVoice(message)
+                //startAudioStreaming(message)
             }
         }
     }
+
+
     private suspend fun Chatbotlist(s: String) {
         withContext(Dispatchers.IO) {
             runCatching {
