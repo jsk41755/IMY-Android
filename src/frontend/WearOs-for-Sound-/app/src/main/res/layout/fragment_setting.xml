@@ -2,11 +2,181 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.settingFragment">
+    tools:context=".view.recordFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:paddingBottom="25dp"
+                android:clipToPadding="false">
+
+                <LinearLayout
+                    android:id="@+id/setting_profile_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="28dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <ImageView
+                        android:src="@drawable/profile_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="18dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:textStyle="bold"
+                            android:text="정승규님"
+                            android:textSize="17sp"
+                            android:layout_centerVertical="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:text="jsk41755"
+                            android:textSize="17sp"
+                            android:layout_centerVertical="true"
+                            android:textColor="#8391A1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/setting_profile"
+                    android:text="프로필 설정"
+                    android:textSize="23sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@id/setting_profile_detail"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"/>
+
+                <RelativeLayout
+                    android:id="@+id/setting_profile_change"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/setting_profile">
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_marginStart="25dp"
+                        android:text="프로필 변경"
+                        android:textSize="17sp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/setting_password_change"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/setting_profile_change">
+
+                    <TextView
+                        android:id="@+id/dailyBpm"
+                        android:textStyle="bold"
+                        android:layout_marginStart="25dp"
+                        android:text="비밀번호 변경"
+                        android:textSize="17sp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/setting_voice"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/setting_password_change">
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_marginStart="25dp"
+                        android:text="아이미 목소리 변경"
+                        android:textSize="17sp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/setting_profile_txt"
+                    android:text="계정"
+                    android:textStyle="bold"
+                    android:textSize="23sp"
+                    android:layout_marginTop="30dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/setting_voice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <RelativeLayout
+                    android:id="@+id/setting_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/setting_profile_txt">
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_marginStart="25dp"
+                        android:text="로그아웃"
+                        android:textSize="17sp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/setting_account_withdrawal"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/setting_logout">
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_marginStart="25dp"
+                        android:text="계정 탈퇴"
+                        android:textSize="17sp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 </layout>

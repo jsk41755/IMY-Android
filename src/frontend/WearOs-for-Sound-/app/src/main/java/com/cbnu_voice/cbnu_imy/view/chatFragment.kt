@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.cbnu_voice.cbnu_imy.Data.Message
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -21,12 +22,18 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.cbnu_voice.cbnu_imy.Api.Clova.fetchAudioUrl
+import com.cbnu_voice.cbnu_imy.App
 import com.cbnu_voice.cbnu_imy.BuildConfig
+import com.cbnu_voice.cbnu_imy.Data.Voice
+import com.cbnu_voice.cbnu_imy.DataStoreModule
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_SEARCH
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
@@ -38,15 +45,15 @@ import com.google.android.exoplayer2.DefaultRenderersFactory
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import java.io.File
 import java.util.*
 
@@ -57,8 +64,6 @@ class chatFragment : Fragment() {
 
     private lateinit var sharedViewModel: MainViewModel
 
-    //You can ignore this messageList if you're coming from the tutorial,
-    // it was used only for my personal debugging
     var messagesList = mutableListOf<Message>()
 
     private lateinit var adapter: MessagingAdapter
@@ -67,6 +72,10 @@ class chatFragment : Fragment() {
     private var binding: FragmentChatBinding? = null
 
     private lateinit var player: ExoPlayer
+
+    private lateinit var speaker : String
+    private var selectNum : Int = 2
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,14 +85,21 @@ class chatFragment : Fragment() {
 
         sharedViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
-            coroutineScope.launch {
-                customBotMessage("안녕? 오늘 기분은 어때?")
-                delay(1000)
-                withContext(Dispatchers.Main) {
-                    rv_messages.scrollToPosition(adapter.itemCount - 1)
-                }
-            }
+        val app = requireContext().applicationContext as App
+        val datastore = app.datastore
 
+        CoroutineScope(Dispatchers.Main).launch {
+            speaker = datastore.text.first()
+            selectNum = datastore.Num.first()
+        }
+
+        coroutineScope.launch {
+            customBotMessage("승규야 안녕? 오늘 기분은 어때?")
+            delay(1000)
+            withContext(Dispatchers.Main) {
+            rv_messages.scrollToPosition(adapter.itemCount - 1)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -253,7 +269,7 @@ class chatFragment : Fragment() {
                 .build()
 
             // Fetch audio URL using fetchAudioUrl function
-            val audioUrl = fetchAudioUrl(requireContext(), message, "nyuna")
+            val audioUrl = fetchAudioUrl(requireContext(), message, speaker)
             var filePath: String? = null
 
             val mediaItem = MediaItem.fromUri(Uri.fromFile(File(audioUrl)))
@@ -273,7 +289,12 @@ class chatFragment : Fragment() {
                     override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                         if (playbackState == Player.STATE_ENDED) {
                             val outputFile = filePath?.let { File(it) }
-                            outputFile?.delete()
+                            val result = outputFile?.deleteRecursively()
+                            if (result == true) {
+                                println("Deletion succeeded.")
+                            } else {
+                                println("Deletion failed.")
+                            }
                         }
                     }
                 })
@@ -339,8 +360,12 @@ class chatFragment : Fragment() {
                     }
 
                 }
-                //startAudioStreaming(response)
-                naverClovaVoice(response)
+
+                if(selectNum == 6){
+                    startAudioStreaming(response)
+                } else {
+                    naverClovaVoice(response)
+                }
             }
         }
     }
@@ -351,12 +376,19 @@ class chatFragment : Fragment() {
             withContext(Dispatchers.IO) {
                 val timeStamp = Time.timeStamp()
                 messagesList.add(Message(message, RECEIVE_ID, timeStamp))
-                adapter.insertMessage(Message(message, RECEIVE_ID, timeStamp))
+
+                val rootView = requireView()
+                rootView.post{
+                    adapter.insertMessage(Message(message, RECEIVE_ID, timeStamp))
+                }
 
                 rv_messages.scrollToPosition(adapter.itemCount - 1)
 
-                naverClovaVoice(message)
-                //startAudioStreaming(message)
+                if(selectNum == 6){
+                    startAudioStreaming(message)
+                } else {
+                    naverClovaVoice(message)
+                }
             }
         }
     }

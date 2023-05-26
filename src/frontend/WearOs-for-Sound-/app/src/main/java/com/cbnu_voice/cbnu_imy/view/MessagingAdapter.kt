@@ -1,6 +1,7 @@
 package com.cbnu_voice.cbnu_imy.view
 
 import android.annotation.SuppressLint
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import com.cbnu_voice.cbnu_imy.R
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
 import com.cbnu_voice.cbnu_imy.Utils.Constants.SEND_ID
 import kotlinx.android.synthetic.main.message_item.view.*
+import java.util.logging.Handler
 
 /*
 import com.codepalace.chatbot.R
@@ -67,7 +69,9 @@ class MessagingAdapter: RecyclerView.Adapter<MessagingAdapter.MessageViewHolder>
 
     fun insertMessage(message: Message) {
         this.messagesList.add(message)
-        notifyItemInserted(messagesList.size)
+        kotlin.run {
+            notifyItemInserted(messagesList.size)
+        }
     }
 
 }
