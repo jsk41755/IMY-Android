@@ -110,8 +110,7 @@
                         android:text="현재 아주 안정적입니다."
                         android:textSize="20sp"
                         android:layout_gravity="center"
-                        android:textColor="@android:color/white"
-                        />
+                        android:textColor="@android:color/white" />
 
                 </LinearLayout>
 
