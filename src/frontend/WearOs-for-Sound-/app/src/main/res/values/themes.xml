@@ -31,7 +31,11 @@
 
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">?colorSurface</item>
-
+        <item name="toolbarStyle">@style/ToolbarStyle</item>
         <item name="ViewLayoutColor">?colorBackgroundFloating</item>
     </style>
+    <style name="ToolbarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/imy_toolbar_white</item>
+    </style>
+
 </resources>

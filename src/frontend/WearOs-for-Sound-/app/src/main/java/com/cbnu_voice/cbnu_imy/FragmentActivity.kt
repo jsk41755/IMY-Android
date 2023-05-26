@@ -13,6 +13,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -34,6 +35,8 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     MessageClient.OnMessageReceivedListener,
     CapabilityClient.OnCapabilityChangedListener{
     private lateinit var binding: FragActivityBinding
+    private lateinit var toolbar: Toolbar
+
     var activityContext: Context? = null
     private val wearableAppCheckPayload = "AppOpenWearable"
     private val wearableAppCheckPayloadReturnACK = "AppOpenWearableACK"
@@ -60,6 +63,8 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         setContentView(binding.root)
         replaceFragment(HomeFragment())
 
+        toolbar = binding.toolbar
+        setSupportActionBar(toolbar)
 
         binding.bottomNav.selectedItemId = R.id.menu_home
 
