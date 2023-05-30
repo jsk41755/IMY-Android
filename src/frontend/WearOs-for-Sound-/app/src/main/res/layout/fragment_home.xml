@@ -36,6 +36,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="center"
                     app:lottie_rawRes="@raw/imy_heartbeat"
+                    app:lottie_speed="0.7"
                     app:lottie_autoPlay="true"
                     app:lottie_loop="true"/>
 
