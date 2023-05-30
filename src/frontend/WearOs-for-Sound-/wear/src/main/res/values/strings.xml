@@ -5,7 +5,7 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
-    <string name="mobile_device_is_connected">어플리케이션을 실행해주세요</string>
+    <string name="mobile_device_is_connected">스마트폰을 실행해주세요</string>
     <string name="mobile_message">Mobile message</string>
     <string name="phone_message">Phone Message</string>
     <string name="message">Message Content</string>
