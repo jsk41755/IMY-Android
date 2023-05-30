@@ -56,11 +56,12 @@
                         <TextView
                             android:id="@+id/messagelogTextView2"
                             android:layout_width="wrap_content"
-                            android:layout_height="66dp"
-                            android:textSize="55sp"
+                            android:layout_height="wrap_content"
+                            android:textSize="60sp"
                             android:text="@{@string/bpm}"
-                            tools:text="443"
+                            tools:text="173"
                             android:gravity="center"
+                            android:textStyle="bold"
                             android:textColor="@android:color/white"
                             android:layout_marginEnd="3dp"
                             android:layout_below="@+id/animationView"/>
@@ -68,18 +69,20 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_marginTop="10dp">
 
                             <TextView
                                 android:layout_width="64dp"
-                                android:layout_height="36dp"
+                                android:layout_height="wrap_content"
                                 android:text="BPM"
-                                android:textSize="24dp"
+                                android:textSize="23dp"
+                                android:textStyle="bold"
                                 android:textColor="@android:color/white"
                                 android:layout_below="@+id/animationView"/>
                             <ImageView
-                                android:layout_width="39dp"
-                                android:layout_height="29dp"
+                                android:layout_width="32dp"
+                                android:layout_height="30dp"
                                 android:src="@drawable/main_logo"
                                 android:layout_below="@+id/animationView"/>
                         </LinearLayout>
@@ -89,12 +92,12 @@
                     <TextView
                         android:id="@+id/messagelogTextView"
                         android:layout_width="158dp"
-                        android:layout_height="30dp"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:gravity="center"
+                        android:gravity="left"
                         android:text="1분전, 63BPM"
                         android:textColor="@android:color/white"
-                        android:textSize="15sp"/>
+                        android:textSize="24sp"/>
 
                 </LinearLayout>
 
