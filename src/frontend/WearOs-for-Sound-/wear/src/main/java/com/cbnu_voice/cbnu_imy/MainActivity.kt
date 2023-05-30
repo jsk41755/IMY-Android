@@ -15,12 +15,14 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.ambient.AmbientModeSupport
 import androidx.wear.ambient.AmbientModeSupport.AmbientCallback
+import com.cbnu_voice.cbnu_imy.Time.Clock
 import com.cbnu_voice.cbnu_imy.databinding.ActivityMainBinding
 import com.google.android.gms.wearable.*
 import java.nio.charset.StandardCharsets
 
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.util.*
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProvider,
@@ -54,12 +56,18 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
     private var BPM = 0
 
+    private lateinit var clock : Clock
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        clock = Clock { currentTime ->
+            binding.digitalWatch.text = currentTime
+        }
 
         activityContext = this
 
@@ -144,7 +152,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
 
         lifecycleScope.launchWhenStarted {
             viewModel.heartRateBpm.collect {
-                binding?.lastMeasuredValue!!.text = String.format("%.1f", it)
+                binding?.lastMeasuredValue?.text = String.format(it.toInt().toString())
                     if (mobileDeviceConnected) {
                         if (binding.lastMeasuredValue.text!!.isNotEmpty()) {
 
@@ -190,6 +198,7 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
     override fun onStart() {
         super.onStart()
         permissionLauncher.launch(android.Manifest.permission.BODY_SENSORS)
+        clock.start()
     }
 
     private fun updateViewVisiblity(uiState: UiState) {
@@ -377,6 +386,11 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         override fun onExitAmbient() {
             super.onExitAmbient()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        clock.stop()
     }
 
 }

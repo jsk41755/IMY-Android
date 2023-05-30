@@ -315,7 +315,13 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                     beforeBpm.append(bpmPrint)
                     beforeBpm.append("BPM")
 
-                    bpmPrint = s.substring(0 until 2)
+                    if(s.length == 2){
+                        bpmPrint = s.substring(0 until 2)
+                    }
+                    else{
+                        bpmPrint = s.substring(0 until 3)
+                    }
+
 
                     /*if (s.toInt()/100 == 0){
                         bpmPrint = s.substring(0 until 2)

@@ -14,6 +14,15 @@
         app:layout_box="all"
         tools:ignore="MissingPrefix">
 
+        <TextView
+            android:id="@+id/digitalWatch"
+            android:text="12:00"
+            android:textColor="@color/white"
+            android:layout_marginTop="60dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -22,9 +31,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:lottie_rawRes="@raw/imy_heartbeat"
+                app:lottie_speed="0.5"
                 app:lottie_loop="true"
-                app:lottie_autoPlay="true"
-                />
+                app:lottie_autoPlay="true"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
