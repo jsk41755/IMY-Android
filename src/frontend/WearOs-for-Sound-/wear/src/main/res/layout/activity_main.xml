@@ -18,10 +18,12 @@
             android:id="@+id/digitalWatch"
             android:text="12:00"
             android:textColor="@color/white"
-            android:layout_marginTop="60dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"/>
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="12dp"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -86,6 +88,7 @@
                             android:visibility="gone"
                             tools:text="60.0"
                             android:textColor="@color/white"
+                            android:textStyle="bold"
                             tools:visibility="visible" />
 
                         <LinearLayout
@@ -100,6 +103,7 @@
                                 android:layout_height="wrap_content"
                                 android:textSize="13sp"
                                 android:textColor="@color/white"
+                                android:textStyle="bold"
                                 android:text="BPM"/>
 
                             <ImageView
