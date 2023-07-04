@@ -113,7 +113,6 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         fragmentTransaction.commit()
     }
 
-    @SuppressLint("SetTextI18n")
     private fun initialiseDevicePairing(tempAct: Activity) {
         //Coroutine
         launch(Dispatchers.Default) {
@@ -157,8 +156,6 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
             }
         }
     }
-
-
     private fun getNodes(context: Context): BooleanArray {
         val nodeResults = HashSet<String>()
         val resBool = BooleanArray(2)
@@ -278,7 +275,6 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         }
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onMessageReceived(p0: MessageEvent) {
         var beforeBpm = StringBuilder()
 

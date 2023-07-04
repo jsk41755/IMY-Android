@@ -4,10 +4,259 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".view.favoriteFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#f5f5f5">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="25dp"
+                android:paddingRight="25dp"
+                android:clipToPadding="false">
+
+                <TextView
+                    android:id="@+id/record_today"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="프로필 설정"
+                    android:textSize="23sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <RelativeLayout
+                    android:id="@+id/record_avgBpm"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    android:backgroundTint="@color/imy_text"
+                    app:layout_constraintTop_toBottomOf="@id/record_today">
+
+                    <ImageView
+                        android:id="@+id/todayImyImage"
+                        android:src="@drawable/plus"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="30dp"
+                        android:layout_width="33.7dp"
+                        android:layout_height="25dp"/>
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_marginStart="13dp"
+                        android:layout_toRightOf="@id/todayImyImage"
+                        android:text="채팅창에서 추가하기"
+                        android:textSize="17sp"
+                        android:textColor="@color/white"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/record_overBpm"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="35dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/record_avgBpm">
+
+                    <ImageView
+                        android:id="@+id/todayImyImage2"
+                        android:src="@drawable/clock"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_width="30.7dp"
+                        android:layout_height="25dp"/>
+
+                    <TextView
+                        android:id="@+id/dailyBpm"
+                        android:textStyle="bold"
+                        android:layout_marginStart="13dp"
+                        android:layout_toRightOf="@id/todayImyImage2"
+                        android:text="최근 들은 메세지"
+                        android:textSize="17sp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/record_repeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/record_overBpm">
+
+                    <ImageView
+                        android:id="@+id/record_heart"
+                        android:src="@drawable/video"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="25dp"
+                        android:layout_width="24.97dp"
+                        android:layout_height="21.3dp"/>
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_marginStart="13dp"
+                        android:layout_toRightOf="@id/record_heart"
+                        android:text="자주 듣는 메세지"
+                        android:textSize="17sp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/heartMessageLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/record_repeat">
+
+                <ImageView
+                    android:id="@+id/heartMessage"
+                    android:src="@drawable/vector"
+                    android:scaleType="fitCenter"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="25dp"
+                    android:layout_width="24.51dp"
+                    android:layout_height="20.66dp"/>
+
+                <TextView
+                    android:textStyle="bold"
+                    android:layout_marginStart="13dp"
+                    android:layout_toRightOf="@id/heartMessage"
+                    android:text="좋아요한 메세지"
+                    android:textSize="17sp"
+                    android:layout_centerVertical="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginRight="20dp"
+                        android:layout_alignParentRight="true"
+                        android:textStyle="bold"
+                        android:text="4 message"
+                        android:textSize="15sp"
+                        android:textColor="@color/imy_text_gray"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/record_tendency"
+                    android:text="보관함 메세지"
+                    android:textStyle="bold"
+                    android:textSize="23sp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/heartMessageLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <RelativeLayout
+                    android:id="@+id/record_weekAvgBpm"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/record_tendency">
+
+                    <ImageView
+                        android:id="@+id/record_heart2"
+                        android:src="@drawable/mark"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="25dp"
+                        android:layout_width="33.7dp"
+                        android:layout_height="25dp"/>
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_marginStart="13dp"
+                        android:layout_toRightOf="@id/record_heart2"
+                        android:text="보관한 메세지"
+                        android:textSize="17sp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginRight="20dp"
+                        android:layout_alignParentRight="true"
+                        android:textStyle="bold"
+                        android:text="17 message"
+                        android:textSize="15sp"
+                        android:textColor="@color/imy_text_gray"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/record_weekOverBpm"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/record_weekAvgBpm">
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_marginStart="25dp"
+                        android:text="자꾸 듣고 싶은"
+                        android:textSize="17sp"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginRight="20dp"
+                        android:layout_alignParentRight="true"
+                        android:textStyle="bold"
+                        android:text="43 message"
+                        android:textSize="15sp"
+                        android:textColor="@color/imy_text_gray"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="메세지를 보관하여 나만의 리스트를 만들어 보세요"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/imy_text_gray"
+                    android:layout_marginTop="25dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/record_weekOverBpm"/>
 
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
 
 </layout>

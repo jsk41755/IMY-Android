@@ -11,28 +11,12 @@ import com.cbnu_voice.cbnu_imy.R
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
 import com.cbnu_voice.cbnu_imy.Utils.Constants.SEND_ID
 import kotlinx.android.synthetic.main.message_item.view.*
-import java.util.logging.Handler
-
-/*
-import com.codepalace.chatbot.R
-import com.codepalace.chatbot.Data.Message
-import com.codepalace.chatbot.utils.Constants.RECEIVE_ID
-import com.codepalace.chatbot.utils.Constants.SEND_ID
-import kotlinx.android.synthetic.main.message_item.view.* */
 
 class MessagingAdapter: RecyclerView.Adapter<MessagingAdapter.MessageViewHolder>() {
 
     var messagesList = mutableListOf<Message>()
 
     inner class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        init {
-            itemView.setOnClickListener {
-
-                //Remove message on the item clicked
-                messagesList.removeAt(adapterPosition)
-                notifyItemRemoved(adapterPosition)
-            }
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
@@ -45,7 +29,6 @@ class MessagingAdapter: RecyclerView.Adapter<MessagingAdapter.MessageViewHolder>
         return messagesList.size
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val currentMessage = messagesList[position]
 

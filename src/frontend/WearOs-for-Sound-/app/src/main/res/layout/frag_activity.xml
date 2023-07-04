@@ -11,6 +11,7 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/imy_toolbar_white"
         android:title="Custom Toolbar"
+        android:elevation="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -38,7 +39,6 @@
                 android:src="@drawable/toolbar_navigation" />
 
         </RelativeLayout>
-
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.fragment.app.FragmentContainerView
@@ -66,8 +66,7 @@
         app:itemIconTint="@drawable/menu_selector_color"
         android:background="@color/white"
         app:itemIconSize="35dp"
-        app:labelVisibilityMode="unlabeled"
-        />
+        app:labelVisibilityMode="unlabeled" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

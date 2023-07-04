@@ -22,18 +22,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import com.cbnu_voice.cbnu_imy.Api.Clova.fetchAudioUrl
 import com.cbnu_voice.cbnu_imy.App
 import com.cbnu_voice.cbnu_imy.BuildConfig
-import com.cbnu_voice.cbnu_imy.Data.Voice
-import com.cbnu_voice.cbnu_imy.DataStoreModule
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_SEARCH
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
@@ -81,9 +76,11 @@ class chatFragment : Fragment() {
 
         requestPermission()
 
-        val coroutineScope = CoroutineScope(Dispatchers.IO)
-
         sharedViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val app = requireContext().applicationContext as App
         val datastore = app.datastore
@@ -93,17 +90,6 @@ class chatFragment : Fragment() {
             selectNum = datastore.Num.first()
         }
 
-        coroutineScope.launch {
-            customBotMessage("승규야 안녕? 오늘 기분은 어때?")
-            delay(1000)
-            withContext(Dispatchers.Main) {
-            rv_messages.scrollToPosition(adapter.itemCount - 1)
-            }
-        }
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         recyclerView()
         clickEvents()
 
@@ -111,9 +97,19 @@ class chatFragment : Fragment() {
        // intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, packageName)    // 여분의 키
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "ko-KR")         // 언어 설정
 
-        /**
-         * call data in mainViewModel
-         */
+        val builder = ExoPlayer.Builder(requireContext(), DefaultRenderersFactory(requireContext()))
+        player = builder.setTrackSelector(DefaultTrackSelector(requireContext()))
+            .build()
+
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+        coroutineScope.launch {
+            customBotMessage("승규야 안녕? 오늘 기분은 어때?")
+            delay(1000)
+            withContext(Dispatchers.Main) {
+                rv_messages.scrollToPosition(adapter.itemCount - 1)
+            }
+        }
+
         sharedViewModel.data.observe(viewLifecycleOwner,  Observer {
             // 데이터 업데이트 시 처리할 작업
             binding?.bpmChatTxt!!.text = sharedViewModel.data.value}
@@ -137,7 +133,6 @@ class chatFragment : Fragment() {
 
         return fragmentBinding.root
     }
-
 
     // 권한 설정 메소드
     private fun requestPermission() {
@@ -264,10 +259,6 @@ class chatFragment : Fragment() {
     private fun naverClovaVoice(message: String) {
         val coroutineScope = CoroutineScope(Dispatchers.IO)
         coroutineScope.launch {
-            val builder = ExoPlayer.Builder(requireContext(), DefaultRenderersFactory(requireContext()))
-            player = builder.setTrackSelector(DefaultTrackSelector(requireContext()))
-                .build()
-
             // Fetch audio URL using fetchAudioUrl function
             val audioUrl = fetchAudioUrl(requireContext(), message, speaker)
             var filePath: String? = null
@@ -392,7 +383,6 @@ class chatFragment : Fragment() {
             }
         }
     }
-
 
     private suspend fun Chatbotlist(s: String) {
         withContext(Dispatchers.IO) {
