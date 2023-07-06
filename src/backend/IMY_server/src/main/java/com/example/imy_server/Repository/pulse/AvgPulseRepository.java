@@ -28,7 +28,7 @@ public interface AvgPulseRepository extends JpaRepository<AvgPulse,Long> {
     )
     String findDailyAvgPulseByDate(LocalDate date);
 
-    @Query("SELECT AVG(ap.avgValue) "+
+    @Query("SELECT FLOOR(AVG(ap.avgValue)) "+
             "FROM AvgPulse ap "
     )
     String AllPulsesAvg();
