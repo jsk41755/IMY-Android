@@ -1,5 +1,6 @@
 package com.example.imy_server.Service;
 
+import com.example.imy_server.Domain.Pulse.AvgPulse;
 import com.example.imy_server.Domain.Pulse.Pulse;
 import com.example.imy_server.Domain.Pulse.PulseDate;
 import com.example.imy_server.Domain.Pulse.StrangePulse;
@@ -113,6 +114,13 @@ public class PulseService {
         return pulseDateRepository.findAll().stream().map(DailyAvgPulseDto::new).collect(Collectors.toList());
     }
 
+    /**
+     * 전체 맥박의 평균을 가져오기 위한 함수
+     */
+    @Transactional(readOnly = true)
+    public String getAllPulsesAvg(){
+        return avgPulseRepository.AllPulsesAvg();
+    }
 
     /**
      * 이상 맥박을 저장하기 위한 함수.
@@ -169,5 +177,10 @@ public class PulseService {
         StrPulseDto strPulseDto = new StrPulseDto(date, strNum);
 
         return strPulseDto;
+    }
+
+    @Transactional(readOnly = true)
+    public String CountAllStrPulse(){
+        return strangePulseRepository.CountAllStrangePulse();
     }
 }

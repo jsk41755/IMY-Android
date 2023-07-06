@@ -63,6 +63,14 @@ public class PulseController {
     }
 
     /**
+     * 전체 평균 맥박 가져오기
+     */
+    @GetMapping("/all/pulse/avg")
+    public String GetAllPulseAvg(){
+        return pulseService.getAllPulsesAvg();
+    }
+
+    /**
      * 전체 일일 평균 맥박 가져오기
      * @return
      */
@@ -89,8 +97,14 @@ public class PulseController {
     public List<DailyStrangePulseDto> GetAllDailyStrangePulse(){
         return pulseService.GetAllDailyStrangePulse();
     }
+
     @GetMapping("/daily/str/cnt/{date}")
     public StrPulseDto GetDailyStrPulseCnt(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
         return pulseService.CountDailyStrangePulse(date);
+    }
+
+    @GetMapping("/all/str/cnt")
+    public String GetAllStrPulseCnt(){
+        return pulseService.CountAllStrPulse();
     }
 }

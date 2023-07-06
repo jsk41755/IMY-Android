@@ -18,4 +18,9 @@ public interface StrangePulseRepository extends JpaRepository<StrangePulse,Long>
             "WHERE sp.pulseDate.createdDate = :date "
     )
     String GetStrangePulseCount(LocalDate date);
+
+    @Query("SELECT count(sp.strSeq) " +
+            "FROM StrangePulse sp "
+    )
+    String CountAllStrangePulse();
 }
