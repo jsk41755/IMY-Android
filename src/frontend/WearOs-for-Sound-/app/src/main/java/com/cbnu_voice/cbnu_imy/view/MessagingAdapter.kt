@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +15,8 @@ import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.cbnu_voice.cbnu_imy.Data.ChatEntity
 import com.cbnu_voice.cbnu_imy.Data.Message
-import com.cbnu_voice.cbnu_imy.Data.MessageEntity
 import com.cbnu_voice.cbnu_imy.R
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
 import com.cbnu_voice.cbnu_imy.Utils.Constants.SEND_ID
@@ -76,13 +77,20 @@ class MessagingAdapter : RecyclerView.Adapter<MessagingAdapter.MessageViewHolder
                     visibility = View.VISIBLE
                 }
                 holder.tvMessage.visibility = View.GONE
+                val isLiked = currentMessage.isLiked
+                Log.d("isLiked", "${position}, ${currentMessage.isLiked}")
+                val colorResId = if (isLiked) R.color.bot_like_button_clicked else R.color.bot_like_button_default
+                val color = ContextCompat.getColor(holder.itemView.context, colorResId)
+                holder.botLikeButton.apply {
+                    backgroundTintList = ColorStateList.valueOf(color)
+                }
             }
         }
 
         holder.itemView.setOnLongClickListener {
             holder.isBotClickLayoutVisible = !holder.isBotClickLayoutVisible
             val botClickLayoutVisibility = if (holder.isBotClickLayoutVisible) View.VISIBLE else View.GONE
-            val animationDuration = 200L // 애니메이션 지속 시간 (밀리초)
+            val animationDuration = 200L
             val startAlpha = if (holder.isBotClickLayoutVisible) 0f else 1f
             val endAlpha = if (holder.isBotClickLayoutVisible) 1f else 0f
 
@@ -117,16 +125,17 @@ class MessagingAdapter : RecyclerView.Adapter<MessagingAdapter.MessageViewHolder
 
             // 클릭된 아이템의 데이터를 Local DB에 저장 또는 삭제합니다.
             onBotLikeClickListener?.let { listener ->
-                val messageEntity = MessageEntity(
-                    id = position.toLong(),
+                val chatEntity = ChatEntity(
+                    id = position+1,
                     message = currentMessage.message,
                     timeStamp = LocalDateTime.now().toString(),
                     isLiked = holder.isBotLikeButtonClicked
                 )
+                Log.d("isLiked", chatEntity.id.toString())
                 if (holder.isBotLikeButtonClicked) {
-                    listener.onLikeClicked(messageEntity)
+                    listener.onLikeClicked(chatEntity)
                 } else {
-                    listener.onUnlikeClicked(messageEntity)
+                    listener.onUnlikeClicked(chatEntity)
                 }
             }
         }
@@ -138,8 +147,8 @@ class MessagingAdapter : RecyclerView.Adapter<MessagingAdapter.MessageViewHolder
     }
 
     interface OnBotLikeClickListener {
-        fun onLikeClicked(messageEntity: MessageEntity)
-        fun onUnlikeClicked(messageEntity: MessageEntity)
+        fun onLikeClicked(chatEntity: ChatEntity)
+        fun onUnlikeClicked(chatEntity: ChatEntity)
     }
 }
 

@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
-import com.cbnu_voice.cbnu_imy.AppDatabase
-import com.cbnu_voice.cbnu_imy.Dao.MessageDao
-import com.cbnu_voice.cbnu_imy.Data.MessageEntity
+import com.cbnu_voice.cbnu_imy.ChatDatabase
+import com.cbnu_voice.cbnu_imy.Dao.ChatMessageDao
+import com.cbnu_voice.cbnu_imy.Data.ChatEntity
 import com.cbnu_voice.cbnu_imy.R
 import com.cbnu_voice.cbnu_imy.databinding.FragmentFavoriteBinding
 import kotlinx.coroutines.launch
@@ -16,10 +16,10 @@ import kotlinx.coroutines.launch
 class favoriteFragment : Fragment() {
     private lateinit var binding: FragmentFavoriteBinding
 
-    private lateinit var messageDao: MessageDao
-    private lateinit var messageDatabase: AppDatabase
+    private lateinit var messageDao: ChatMessageDao
+    private lateinit var messageDatabase: ChatDatabase
 
-    private lateinit var favoriteMessages: List<MessageEntity>
+    private lateinit var favoriteMessages: List<ChatEntity>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,18 +32,18 @@ class favoriteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        messageDatabase = AppDatabase.getDatabase(requireContext())
-        messageDao = messageDatabase.messageDao()
+        messageDatabase = ChatDatabase.getDatabase(requireContext())
+        messageDao = messageDatabase.chatMessageDao()
 
         loadFavoriteMessages()
         binding = FragmentFavoriteBinding.bind(view)
     }
 
     private fun loadFavoriteMessages() {
-        val messageDao = AppDatabase.getDatabase(requireContext()).messageDao()
+        val messageDao = ChatDatabase.getDatabase(requireContext()).chatMessageDao()
 
         lifecycleScope.launch {
-            favoriteMessages = messageDao.getAllMessages()
+            favoriteMessages = messageDao.getLikedMessages()
             val likeMessageCount = favoriteMessages.size.toString()
             binding.likeMessageCount.text = "$likeMessageCount message"
         }

@@ -5,7 +5,7 @@ import androidx.room.Room
 
 class App : Application() {
     lateinit var datastore: DataStoreModule
-    lateinit var messageDatabase: AppDatabase
+    lateinit var messageDatabase: ChatDatabase
 
     companion object {
         private lateinit var instance: App
@@ -20,7 +20,7 @@ class App : Application() {
 
         messageDatabase = Room.databaseBuilder(
             applicationContext,
-            AppDatabase::class.java,
+            ChatDatabase::class.java,
             "message-db"
         ).build()
     }

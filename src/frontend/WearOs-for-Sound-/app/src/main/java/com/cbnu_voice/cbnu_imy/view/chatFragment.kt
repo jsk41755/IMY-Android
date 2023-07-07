@@ -29,13 +29,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.cbnu_voice.cbnu_imy.Api.Clova.fetchAudioUrl
 import com.cbnu_voice.cbnu_imy.App
-import com.cbnu_voice.cbnu_imy.AppDatabase
 import com.cbnu_voice.cbnu_imy.BuildConfig
 import com.cbnu_voice.cbnu_imy.ChatDatabase
 import com.cbnu_voice.cbnu_imy.Dao.ChatMessageDao
-import com.cbnu_voice.cbnu_imy.Dao.MessageDao
 import com.cbnu_voice.cbnu_imy.Data.ChatEntity
-import com.cbnu_voice.cbnu_imy.Data.MessageEntity
 import com.cbnu_voice.cbnu_imy.DataStoreModule
 import com.cbnu_voice.cbnu_imy.R
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
@@ -77,9 +74,7 @@ class chatFragment : Fragment() {
     private lateinit var speaker : String
     private var selectNum : Int = 2
 
-    private lateinit var messageDao: MessageDao
     private lateinit var chatMessageDao: ChatMessageDao
-    private lateinit var messageDatabase: AppDatabase
     private lateinit var chatMessageDatabase: ChatDatabase
 
     private lateinit var app: App
@@ -101,8 +96,6 @@ class chatFragment : Fragment() {
 
         Log.d("countNum", datastore.chatId.value.toString())
 
-        messageDatabase = AppDatabase.getDatabase(requireContext())
-        messageDao = messageDatabase.messageDao()
         chatMessageDatabase = ChatDatabase.getDatabase(requireContext())
         chatMessageDao = chatMessageDatabase.chatMessageDao()
 
@@ -160,17 +153,19 @@ class chatFragment : Fragment() {
         }
 
         adapter.onBotLikeClickListener = object : MessagingAdapter.OnBotLikeClickListener{
-            override fun onLikeClicked(messageEntity: MessageEntity) {
+            override fun onLikeClicked(chatEntity: ChatEntity) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    messageDao.insertMessage(messageEntity)
-                    Log.d("MessageDao", "Message inserted: ${messageEntity.id}, ${messageEntity.message}")
+                    //messageDao.insertMessage(messageEntity)
+                    chatMessageDao.updateMessage(chatEntity)
+                    Log.d("MessageDao", "Message inserted: ${chatEntity.id}, ${chatEntity.message}, ${chatEntity.isLiked}")
                 }
-
             }
 
-            override fun onUnlikeClicked(messageEntity: MessageEntity) {
+            override fun onUnlikeClicked(chatEntity: ChatEntity) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    messageDao.deleteMessage(messageEntity)
+                    //messageDao.deleteMessage(messageEntity)
+                    chatMessageDao.deleteMessage(chatEntity)
+                    Log.d("MessageDao", "Message updated: ${chatEntity.id}, ${chatEntity.message}, ${chatEntity.isLiked}")
                 }
             }
         }
