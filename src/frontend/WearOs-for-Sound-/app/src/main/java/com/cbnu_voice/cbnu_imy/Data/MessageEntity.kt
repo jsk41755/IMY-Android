@@ -11,3 +11,13 @@ data class MessageEntity(
     val timeStamp: String,
     val isLiked: Boolean
 )
+
+@Entity(tableName = "chat_history")
+data class ChatEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
+    val message: String,
+    val timeStamp: String,
+    val isLiked: Boolean
+)
+

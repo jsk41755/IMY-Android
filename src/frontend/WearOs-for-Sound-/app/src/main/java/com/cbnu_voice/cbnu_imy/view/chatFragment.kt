@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import com.cbnu_voice.cbnu_imy.Data.Message
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Debug
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -26,12 +26,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.cbnu_voice.cbnu_imy.Api.Clova.fetchAudioUrl
 import com.cbnu_voice.cbnu_imy.App
 import com.cbnu_voice.cbnu_imy.AppDatabase
 import com.cbnu_voice.cbnu_imy.BuildConfig
+import com.cbnu_voice.cbnu_imy.ChatDatabase
+import com.cbnu_voice.cbnu_imy.Dao.ChatMessageDao
 import com.cbnu_voice.cbnu_imy.Dao.MessageDao
+import com.cbnu_voice.cbnu_imy.Data.ChatEntity
 import com.cbnu_voice.cbnu_imy.Data.MessageEntity
+import com.cbnu_voice.cbnu_imy.DataStoreModule
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_SEARCH
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
@@ -72,7 +77,12 @@ class chatFragment : Fragment() {
     private var selectNum : Int = 2
 
     private lateinit var messageDao: MessageDao
+    private lateinit var chatMessageDao: ChatMessageDao
     private lateinit var messageDatabase: AppDatabase
+    private lateinit var chatMessageDatabase: ChatDatabase
+
+    private lateinit var app: App
+    private lateinit var datastore: DataStoreModule
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,11 +95,17 @@ class chatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val app = requireContext().applicationContext as App
-        val datastore = app.datastore
+
+
+        app = requireContext().applicationContext as App
+        datastore = app.datastore
+
+        Log.d("countNum", datastore.chatId.value.toString())
 
         messageDatabase = AppDatabase.getDatabase(requireContext())
         messageDao = messageDatabase.messageDao()
+        chatMessageDatabase = ChatDatabase.getDatabase(requireContext())
+        chatMessageDao = chatMessageDatabase.chatMessageDao()
 
         /*CoroutineScope(Dispatchers.IO).launch {
             val messages = messageDao.getAllMessages()
@@ -105,6 +121,8 @@ class chatFragment : Fragment() {
 
         recyclerView()
         clickEvents()
+        // 데이터베이스에서 아이템 로드하여 Adapter에 설정
+        loadMessages()
 
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
        // intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, packageName)    // 여분의 키
@@ -115,11 +133,14 @@ class chatFragment : Fragment() {
             .build()
 
         val coroutineScope = CoroutineScope(Dispatchers.IO)
-        coroutineScope.launch {
-            customBotMessage("승규야 안녕? 오늘 기분은 어때?")
-            delay(1000)
-            withContext(Dispatchers.Main) {
-                rv_messages.scrollToPosition(adapter.itemCount - 1)
+
+        if(datastore.chatId.value == 0){
+            coroutineScope.launch {
+                customBotMessage("승규야 안녕? 오늘 기분은 어때?")
+                delay(1000)
+                withContext(Dispatchers.Main) {
+                    rv_messages.scrollToPosition(adapter.itemCount - 1)
+                }
             }
         }
 
@@ -150,8 +171,24 @@ class chatFragment : Fragment() {
                 }
             }
         }
-
     }
+    private fun loadMessages() {
+        lifecycleScope.launch {
+            val chatEntities = withContext(Dispatchers.IO) {
+                chatMessageDao.getAllMessages()
+            }
+            val messages = chatEntities.map { chatEntity ->
+                Message(
+                    chatEntity.message,
+                    if (chatEntity.id % 2 == 0) RECEIVE_ID else SEND_ID,
+                    chatEntity.timeStamp,
+                    chatEntity.isLiked
+                )
+            }
+            adapter.setMessages(messages.toMutableList())
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -337,6 +374,12 @@ class chatFragment : Fragment() {
 
             botResponse(message)
 
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    datastore.countNum()
+                    chatMessageDao.insertMessage(ChatEntity(datastore.chatId.value, message, timeStamp, isLiked = false))
+                }
+            }
         }
     }
     private fun botResponse(message: String) {
@@ -365,6 +408,13 @@ class chatFragment : Fragment() {
                 //adapter.insertMessage(Message(response, RECEIVE_ID, timeStamp))
                 //Scrolls us to the position of the latest message
                 rv_messages.scrollToPosition(adapter.itemCount - 1)
+
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        datastore.countNum()
+                        chatMessageDao.insertMessage(ChatEntity(datastore.chatId.value, response, timeStamp, isLiked = false))
+                    }
+                }
 
                 //Starts Google
                 when (response) {
@@ -435,5 +485,37 @@ class chatFragment : Fragment() {
         super.onDestroyView()
 
         player.release()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val messages = adapter.getMessages() // 어댑터에서 현재 아이템 리스트를 가져옴
+        outState.putParcelableArrayList("chat_history", ArrayList(messages)) // 메시지 리스트를 번들에 저장
+        Log.d("convertedMessage", "${outState.classLoader}")
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        val messages = savedInstanceState?.getParcelableArrayList<Message>("chat_history") // 저장된 메시지 리스트를 가져옴
+        messages?.let {
+            val messageList = convertToMessageList(messages)
+            adapter.setMessages(messageList as MutableList<Message>) // 어댑터에 메시지 리스트 설정
+            Log.d("convertedMessage12", "${messageList}")
+        }
+    }
+
+    private fun convertToMessageList(messages: List<Message>): List<Message> {
+        val convertedMessages = mutableListOf<Message>()
+        for (message in messages) {
+            val convertedMessage = Message(
+                message = message.message,
+                id = if (message.id.toInt() % 2 == 0) RECEIVE_ID else SEND_ID,
+                time = message.time,
+                isLiked = message.isLiked
+            )
+            Log.d("convertedMessage", "${message.message}, ${message.id}, ${message.time}, ${message.isLiked}")
+            convertedMessages.add(convertedMessage)
+        }
+        return convertedMessages
     }
 }

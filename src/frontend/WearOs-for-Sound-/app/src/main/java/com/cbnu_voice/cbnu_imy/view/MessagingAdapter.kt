@@ -1,7 +1,6 @@
 package com.cbnu_voice.cbnu_imy.view
 
 import android.content.res.ColorStateList
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,7 @@ import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
 import com.cbnu_voice.cbnu_imy.Utils.Constants.SEND_ID
 import kotlinx.android.synthetic.main.message_item.view.*
 import java.time.LocalDateTime
+import java.util.ArrayList
 
 class MessagingAdapter : RecyclerView.Adapter<MessagingAdapter.MessageViewHolder>() {
 
@@ -45,6 +45,15 @@ class MessagingAdapter : RecyclerView.Adapter<MessagingAdapter.MessageViewHolder
 
     override fun getItemCount(): Int {
         return messagesList.size
+    }
+
+    fun setMessages(messages: MutableList<Message>) {
+        messagesList = messages
+        notifyDataSetChanged()
+    }
+
+    fun getMessages(): List<Message> {
+        return messagesList
     }
 
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
