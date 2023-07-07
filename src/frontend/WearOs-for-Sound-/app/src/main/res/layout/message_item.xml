@@ -53,6 +53,7 @@
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/botListen"
                 android:background="@drawable/music"
+                android:backgroundTint="@color/bot_like_button_default"
                 android:layout_width="20dp"
                 android:layout_height="20dp"/>
 
