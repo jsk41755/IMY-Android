@@ -1,5 +1,8 @@
 package com.cbnu_voice.cbnu_imy.view
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.animation.ObjectAnimator
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
@@ -52,10 +55,6 @@ class MessagingAdapter : RecyclerView.Adapter<MessagingAdapter.MessageViewHolder
         notifyDataSetChanged()
     }
 
-    fun getMessages(): List<Message> {
-        return messagesList
-    }
-
     override fun onBindViewHolder(holder: MessageViewHolder, position: Int) {
         val currentMessage = messagesList[position]
 
@@ -76,10 +75,28 @@ class MessagingAdapter : RecyclerView.Adapter<MessagingAdapter.MessageViewHolder
             }
         }
 
-        holder.itemView.setOnClickListener {
+        holder.itemView.setOnLongClickListener {
             holder.isBotClickLayoutVisible = !holder.isBotClickLayoutVisible
             val botClickLayoutVisibility = if (holder.isBotClickLayoutVisible) View.VISIBLE else View.GONE
-            holder.botClickLayout.visibility = botClickLayoutVisibility
+            val animationDuration = 200L // 애니메이션 지속 시간 (밀리초)
+            val startAlpha = if (holder.isBotClickLayoutVisible) 0f else 1f
+            val endAlpha = if (holder.isBotClickLayoutVisible) 1f else 0f
+
+            val animator = ObjectAnimator.ofFloat(holder.botClickLayout, "alpha", startAlpha, endAlpha)
+            animator.duration = animationDuration
+            animator.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                    holder.botClickLayout.visibility = botClickLayoutVisibility
+                }
+                override fun onAnimationEnd(animation: Animator) {}
+
+                override fun onAnimationCancel(animation: Animator) {}
+
+                override fun onAnimationRepeat(animation: Animator) {}
+            })
+            animator.start()
+
+            true
         }
 
         holder.botLikeButton.setOnClickListener {

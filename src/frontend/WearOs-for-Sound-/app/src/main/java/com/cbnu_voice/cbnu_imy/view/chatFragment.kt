@@ -37,6 +37,7 @@ import com.cbnu_voice.cbnu_imy.Dao.MessageDao
 import com.cbnu_voice.cbnu_imy.Data.ChatEntity
 import com.cbnu_voice.cbnu_imy.Data.MessageEntity
 import com.cbnu_voice.cbnu_imy.DataStoreModule
+import com.cbnu_voice.cbnu_imy.R
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_SEARCH
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
@@ -95,8 +96,6 @@ class chatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-
         app = requireContext().applicationContext as App
         datastore = app.datastore
 
@@ -136,9 +135,13 @@ class chatFragment : Fragment() {
 
         if(datastore.chatId.value == 0){
             coroutineScope.launch {
-                customBotMessage("승규야 안녕? 오늘 기분은 어때?")
+                val helloBotMessage = resources.getString(R.string.helloBotMessage)
+                val timeStamp = Time.timeStamp()
+                customBotMessage(helloBotMessage)
                 delay(1000)
                 withContext(Dispatchers.Main) {
+                    chatMessageDao.insertMessage(ChatEntity(datastore.chatId.value, helloBotMessage, timeStamp, isLiked = false))
+                    datastore.countNum()
                     rv_messages.scrollToPosition(adapter.itemCount - 1)
                 }
             }
@@ -180,7 +183,7 @@ class chatFragment : Fragment() {
             val messages = chatEntities.map { chatEntity ->
                 Message(
                     chatEntity.message,
-                    if (chatEntity.id % 2 == 0) RECEIVE_ID else SEND_ID,
+                    if (chatEntity.id % 2 != 0) RECEIVE_ID else SEND_ID,
                     chatEntity.timeStamp,
                     chatEntity.isLiked
                 )
@@ -485,37 +488,5 @@ class chatFragment : Fragment() {
         super.onDestroyView()
 
         player.release()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        val messages = adapter.getMessages() // 어댑터에서 현재 아이템 리스트를 가져옴
-        outState.putParcelableArrayList("chat_history", ArrayList(messages)) // 메시지 리스트를 번들에 저장
-        Log.d("convertedMessage", "${outState.classLoader}")
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        val messages = savedInstanceState?.getParcelableArrayList<Message>("chat_history") // 저장된 메시지 리스트를 가져옴
-        messages?.let {
-            val messageList = convertToMessageList(messages)
-            adapter.setMessages(messageList as MutableList<Message>) // 어댑터에 메시지 리스트 설정
-            Log.d("convertedMessage12", "${messageList}")
-        }
-    }
-
-    private fun convertToMessageList(messages: List<Message>): List<Message> {
-        val convertedMessages = mutableListOf<Message>()
-        for (message in messages) {
-            val convertedMessage = Message(
-                message = message.message,
-                id = if (message.id.toInt() % 2 == 0) RECEIVE_ID else SEND_ID,
-                time = message.time,
-                isLiked = message.isLiked
-            )
-            Log.d("convertedMessage", "${message.message}, ${message.id}, ${message.time}, ${message.isLiked}")
-            convertedMessages.add(convertedMessage)
-        }
-        return convertedMessages
     }
 }
