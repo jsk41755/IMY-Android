@@ -67,5 +67,8 @@
     <color name="imy_chart_gray">#D9D9D9</color>
     <color name="imy_toolbar_white">#FFFFFF</color>
 
+    <color name="bot_like_button_clicked">#43D681</color>
+    <color name="bot_like_button_default">#DADADA</color>
+
 
 </resources>

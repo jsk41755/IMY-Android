@@ -28,7 +28,10 @@ import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
 import androidx.lifecycle.Observer
 import com.cbnu_voice.cbnu_imy.Api.Clova.fetchAudioUrl
 import com.cbnu_voice.cbnu_imy.App
+import com.cbnu_voice.cbnu_imy.AppDatabase
 import com.cbnu_voice.cbnu_imy.BuildConfig
+import com.cbnu_voice.cbnu_imy.Dao.MessageDao
+import com.cbnu_voice.cbnu_imy.Data.MessageEntity
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_GOOGLE
 import com.cbnu_voice.cbnu_imy.Utils.Constants.OPEN_SEARCH
 import com.cbnu_voice.cbnu_imy.Utils.Constants.RECEIVE_ID
@@ -45,10 +48,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import java.io.File
 import java.util.*
 
@@ -71,6 +71,9 @@ class chatFragment : Fragment() {
     private lateinit var speaker : String
     private var selectNum : Int = 2
 
+    private lateinit var messageDao: MessageDao
+    private lateinit var messageDatabase: AppDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -84,6 +87,16 @@ class chatFragment : Fragment() {
 
         val app = requireContext().applicationContext as App
         val datastore = app.datastore
+
+        messageDatabase = AppDatabase.getDatabase(requireContext())
+        messageDao = messageDatabase.messageDao()
+
+        /*CoroutineScope(Dispatchers.IO).launch {
+            val messages = messageDao.getAllMessages()
+            for (message in messages) {
+                Log.d("Message", "ID: ${message.id}, Message: ${message.message}")
+            }
+        }*/
 
         CoroutineScope(Dispatchers.Main).launch {
             speaker = datastore.text.first()
@@ -121,6 +134,23 @@ class chatFragment : Fragment() {
             speechRecognizer.setRecognitionListener(recognitionListener)    // 리스너 설정
             speechRecognizer.startListening(intent)                         // 듣기 시작
         }
+
+        adapter.onBotLikeClickListener = object : MessagingAdapter.OnBotLikeClickListener{
+            override fun onLikeClicked(messageEntity: MessageEntity) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    messageDao.insertMessage(messageEntity)
+                    Log.d("MessageDao", "Message inserted: ${messageEntity.id}, ${messageEntity.message}")
+                }
+
+            }
+
+            override fun onUnlikeClicked(messageEntity: MessageEntity) {
+                CoroutineScope(Dispatchers.IO).launch {
+                    messageDao.deleteMessage(messageEntity)
+                }
+            }
+        }
+
     }
 
     override fun onCreateView(
@@ -299,10 +329,10 @@ class chatFragment : Fragment() {
 
         if (message.isNotEmpty()) {
             //Adds it to our local list
-            messagesList.add(Message(message, SEND_ID, timeStamp))
+            messagesList.add(Message(message, SEND_ID, timeStamp, isLiked=false))
             et_message.setText("")
 
-            adapter.insertMessage(Message(message, SEND_ID, timeStamp))
+            adapter.insertMessage(Message(message, SEND_ID, timeStamp, isLiked=false))
             rv_messages.scrollToPosition(adapter.itemCount - 1)
 
             botResponse(message)
@@ -328,10 +358,10 @@ class chatFragment : Fragment() {
                 //Adds it to our local list
 
                 //messagesList.add(Message(response, RECEIVE_ID, timeStamp))
-                messagesList.add(Message(response, RECEIVE_ID, timeStamp))
+                messagesList.add(Message(response, RECEIVE_ID, timeStamp, isLiked=false))
 
                 //Inserts our message into the adapter
-                adapter.insertMessage(Message(response, RECEIVE_ID, timeStamp))
+                adapter.insertMessage(Message(response, RECEIVE_ID, timeStamp, isLiked=false))
                 //adapter.insertMessage(Message(response, RECEIVE_ID, timeStamp))
                 //Scrolls us to the position of the latest message
                 rv_messages.scrollToPosition(adapter.itemCount - 1)
@@ -364,13 +394,13 @@ class chatFragment : Fragment() {
     private fun customBotMessage(message: String) {
         GlobalScope.launch {
             delay(1000)
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
                 val timeStamp = Time.timeStamp()
-                messagesList.add(Message(message, RECEIVE_ID, timeStamp))
+                messagesList.add(Message(message, RECEIVE_ID, timeStamp, isLiked=false))
 
                 val rootView = requireView()
                 rootView.post{
-                    adapter.insertMessage(Message(message, RECEIVE_ID, timeStamp))
+                    adapter.insertMessage(Message(message, RECEIVE_ID, timeStamp, isLiked=false))
                 }
 
                 rv_messages.scrollToPosition(adapter.itemCount - 1)
@@ -387,11 +417,15 @@ class chatFragment : Fragment() {
     private suspend fun Chatbotlist(s: String) {
         withContext(Dispatchers.IO) {
             runCatching {
+                val startTime = System.currentTimeMillis()
+
                 val retrofit = RetrofitBuilder.chatbotapi.getKobertResponse(s)
                 val res = retrofit.execute().body()
-                //Toast.makeText(requireContext(), res?.answer, Toast.LENGTH_SHORT).show()
-                //res.code() == 200
-                Log.v("태그", "${res}")
+
+                val endTime = System.currentTimeMillis()
+                val duration = endTime - startTime
+                Log.v("응답 속도", "${duration}")
+
                 chatresponse= res!!.answer
             }.getOrDefault(false)
         }
