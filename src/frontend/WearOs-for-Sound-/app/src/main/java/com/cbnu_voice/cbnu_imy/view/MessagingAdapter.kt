@@ -7,10 +7,12 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.cbnu_voice.cbnu_imy.Data.Message
 import com.cbnu_voice.cbnu_imy.Data.MessageEntity
@@ -31,6 +33,7 @@ class MessagingAdapter : RecyclerView.Adapter<MessagingAdapter.MessageViewHolder
         val tvBotMessage: TextView = itemView.findViewById(R.id.tv_bot_message)
         val botClickLayout: LinearLayout = itemView.findViewById(R.id.botClickLayout)
         val botLikeButton: AppCompatImageButton = itemView.findViewById(R.id.botLike)
+        val chatImy: FrameLayout = itemView.findViewById(R.id.chatImy)
         var isBotClickLayoutVisible: Boolean = false
         var isBotLikeButtonClicked: Boolean = false
         var currentMessage: Message? = null
@@ -65,6 +68,7 @@ class MessagingAdapter : RecyclerView.Adapter<MessagingAdapter.MessageViewHolder
                     visibility = View.VISIBLE
                 }
                 holder.tvBotMessage.visibility = View.GONE
+                holder.chatImy.visibility = View.GONE
             }
             RECEIVE_ID -> {
                 holder.tvBotMessage.apply {
