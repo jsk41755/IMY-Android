@@ -1,6 +1,5 @@
 package com.cbnu_voice.cbnu_imy.view
 
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,10 +8,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.cbnu_voice.cbnu_imy.Api.Pulse.PulseClient
 import com.cbnu_voice.cbnu_imy.Api.Pulse.RetrofitManager
 import com.cbnu_voice.cbnu_imy.CustomBarChartRender
-import com.cbnu_voice.cbnu_imy.Dto.Pulse.DailyPulseDto
 import com.cbnu_voice.cbnu_imy.R
 import com.cbnu_voice.cbnu_imy.Utils.Constans.TAG
 import com.cbnu_voice.cbnu_imy.Utils.RESPONSE_STATE
@@ -25,9 +22,6 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class recordFragment : Fragment() {
@@ -54,6 +48,8 @@ class recordFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         var barChart: BarChart = binding?.bpmBarChart!! // barChart 생성
+
+        //getPulseList()
 
         val entries = ArrayList<BarEntry>()
         entries.add(BarEntry(1f,80.0f))
@@ -164,7 +160,7 @@ class recordFragment : Fragment() {
         }
     }
 
-    fun GetPulseList(){
+    /*fun getPulseList(){
         RetrofitManager.instance.getBpmAvg(completion = {
             responseState, responseBody ->
             when(responseState){
@@ -177,5 +173,5 @@ class recordFragment : Fragment() {
                 }
             }
         })
-    }
+    }*/
 }

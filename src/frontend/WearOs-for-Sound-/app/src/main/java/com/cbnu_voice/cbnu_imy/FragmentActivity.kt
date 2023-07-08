@@ -1,31 +1,21 @@
 package com.cbnu_voice.cbnu_imy
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.cbnu_voice.cbnu_imy.view.*
 import com.cbnu_voice.cbnu_imy.databinding.FragActivityBinding
 import com.cbnu_voice.cbnu_imy.viewmodel.MainViewModel
 import com.google.android.gms.tasks.Tasks
 import com.google.android.gms.wearable.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.*
 import java.nio.charset.StandardCharsets
 import java.util.HashSet
@@ -89,8 +79,8 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
         sharedViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        sharedViewModel.bpmStack.observe(this) {
-            if (sharedViewModel.bpmStack.value == 5) {
+        sharedViewModel.bpmCount.observe(this) {
+            if (sharedViewModel.bpmCount.value == 5) {
                 AlertDialog.Builder(this)
                     .setTitle("잠깐 운동중이신가요??")
                     .setMessage("저와 이야기를 나누고 싶으면 말씀하세요!")
@@ -303,7 +293,6 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
                 sharedViewModel.setBpm(s)
 
-
             } else if (messageEventPath.isNotEmpty() && messageEventPath == MESSAGE_ITEM_RECEIVED_PATH) {
 
                 try {
@@ -318,17 +307,9 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
                         bpmPrint = s.substring(0 until 3)
                     }
 
-
-                    /*if (s.toInt()/100 == 0){
-                        bpmPrint = s.substring(0 until 2)
-                    }
-                    else{
-                        bpmPrint = s.substring(0 until 3)
-                    }*/
-
                     beforeBpm.setLength(0)
                     sharedViewModel.setBpm(bpmPrint)
-                    sharedViewModel.bpmStack(1)
+                    sharedViewModel.bpmCount(1)
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -357,8 +338,6 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
-
     }
 
 }

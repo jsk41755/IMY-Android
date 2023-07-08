@@ -14,37 +14,39 @@ class RetrofitManager {
     }
 
     //레트로핏 인터페이스 가져오기
-    private val pulseApi : PulseApi? = PulseClient.getClient(API.Base_URL)?.create(PulseApi::class.java)
+    //private val pulseApi : PulseApi? = PulseClient.getClient(API.Base_URL)?.create(PulseApi::class.java)
 
-    //daily bpm avg api 호출
-    fun getBpmAvg(completion: (RESPONSE_STATE, String) -> Unit){
-
+    /*fun getBpmAvg(completion: (RESPONSE_STATE, String) -> Unit){
         val call = pulseApi?.getPulseAvgResponse() ?: return
-
         call.enqueue(object : retrofit2.Callback<JsonElement>{
-
-            //응답 성공시
             override fun onResponse(call: Call<JsonElement>, response: Response<JsonElement>) {
                 Log.d(TAG, "onResponse: ${response.body()}")
 
-                response.body()?.let {
-                    val body = it.asJsonArray.asJsonObject.getAsJsonObject()
-                    val averageValue = body.asJsonObject.getAsJsonObject("createdDate")
-                    //val result = body2.getAsJsonObject("averageValue")
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        val jsonArray = it.asJsonArray
+                        for (i in 0 until jsonArray.size()) {
+                            val jsonObject = jsonArray[i].asJsonObject
+                            val createdDate = jsonObject.get("createdDate").asString
+                            val averageValue = jsonObject.getAsJsonObject("averageValue")
+                            val avgSeq = averageValue.get("avgSeq").asInt
+                            val avgValue = averageValue.get("avgValue").asString
 
-                    //val total = averageValue.getAsJsonObject("avgValue")
-
-                    Log.d(TAG, "onResponse: $averageValue")
+                            Log.d(TAG, "Created Date: $createdDate")
+                            Log.d(TAG, "Average Value - Seq: $avgSeq")
+                            Log.d(TAG, "Average Value - Value: $avgValue")
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "onResponse: Error - ${response.message()}")
                 }
-                //completion(RESPONSE_STATE.OKAY, response.body().toString())
             }
 
-            //응답 실패시
+
             override fun onFailure(call: Call<JsonElement>, t: Throwable) {
                 Log.d(TAG, "onFailure: onFailure")
                 completion(RESPONSE_STATE.FAIL, t.toString())
             }
-
         })
-    }
+    }*/
 }
