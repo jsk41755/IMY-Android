@@ -13,6 +13,7 @@ data class CorpusDto(val corpus_id : Int=0,
                      val system_response3: String="",
                      val human_sentence4: String="",
                      val system_response4: String=""){
+    //TODO("삭제해야할지")
 }
 
 data class CorpusDto2(var system_response1: String="")
