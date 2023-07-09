@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.cbnu_voice.cbnu_imy.Api.Pulse.RetrofitManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.cbnu_voice.cbnu_imy.CustomBarChartRender
 import com.cbnu_voice.cbnu_imy.R
-import com.cbnu_voice.cbnu_imy.Utils.Constans.TAG
-import com.cbnu_voice.cbnu_imy.Utils.RESPONSE_STATE
 import com.cbnu_voice.cbnu_imy.databinding.FragmentRecordBinding
+import com.cbnu_voice.cbnu_imy.viewmodel.MainViewModel
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -22,15 +22,14 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 
 class recordFragment : Fragment() {
 
     private var binding: FragmentRecordBinding? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private lateinit var mainViewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,17 +38,32 @@ class recordFragment : Fragment() {
         val fragmentBinding = FragmentRecordBinding.inflate(inflater, container, false)
         binding = fragmentBinding
 
-        //GetPulseList()
-
         return fragmentBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var barChart: BarChart = binding?.bpmBarChart!! // barChart 생성
+        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        //getPulseList()
+        viewLifecycleOwner.lifecycleScope.launch {
+            mainViewModel.fetchPulseAvg()
+            mainViewModel.fetchPulseAbove()
+        }
+
+        lifecycleScope.launch {
+            mainViewModel.getPulseAvg.collect { pulseAvg ->
+                binding?.recordAvgBpmMonth?.text = pulseAvg.toString().plus("BPM")
+            }
+        }
+
+        lifecycleScope.launch {
+            mainViewModel.getPulseAbove.collect { pulseAbove ->
+                binding?.recordAboveBpmMonth?.text = pulseAbove.toString().plus("회")
+            }
+        }
+
+        var barChart: BarChart = binding?.bpmBarChart!! // barChart 생성
 
         val entries = ArrayList<BarEntry>()
         entries.add(BarEntry(1f,80.0f))
@@ -159,19 +173,4 @@ class recordFragment : Fragment() {
             return days.getOrNull(value.toInt()-1) ?: ""
         }
     }
-
-    /*fun getPulseList(){
-        RetrofitManager.instance.getBpmAvg(completion = {
-            responseState, responseBody ->
-            when(responseState){
-                RESPONSE_STATE.OKAY -> {
-                    Log.d(TAG, "GetPulseList:  $responseBody")
-                }
-                RESPONSE_STATE.FAIL -> {
-                    Toast.makeText(requireContext(), "api호출 에러", Toast.LENGTH_SHORT).show()
-                    Log.d(TAG, "GetPulseList:  $responseBody")
-                }
-            }
-        })
-    }*/
 }

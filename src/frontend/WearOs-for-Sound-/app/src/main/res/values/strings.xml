@@ -17,6 +17,6 @@
     <string name="favorite_activate">favorite</string>
     <string name="helloBotMessage">승규야 안녕? 오늘 기분은 어때?</string>
 
-
+    <string name="loading">로딩중...</string>
     <string name="bpm">77</string>
 </resources>

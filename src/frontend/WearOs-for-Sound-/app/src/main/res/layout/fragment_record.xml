@@ -193,10 +193,11 @@
                         android:layout_height="25dp"/>
 
                     <TextView
+                        android:id="@+id/recordAvgBpmMonth"
                         android:textStyle="bold"
                         android:layout_marginStart="13dp"
                         android:layout_toRightOf="@id/record_heart2"
-                        android:text="84BPM"
+                        android:text="@string/loading"
                         android:textSize="17sp"
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
@@ -233,10 +234,11 @@
                         android:layout_height="25dp"/>
 
                     <TextView
+                        android:id="@+id/recordAboveBpmMonth"
                         android:textStyle="bold"
                         android:layout_marginStart="13dp"
                         android:layout_toRightOf="@id/todayImyImage3"
-                        android:text="3회"
+                        android:text="@string/loading"
                         android:textSize="17sp"
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"

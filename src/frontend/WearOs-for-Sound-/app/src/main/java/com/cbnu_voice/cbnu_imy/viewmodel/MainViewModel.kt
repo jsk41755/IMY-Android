@@ -10,12 +10,15 @@ import com.cbnu_voice.cbnu_imy.Api.Pulse.PulseClient
 import com.cbnu_voice.cbnu_imy.Data.PulseData
 import com.cbnu_voice.cbnu_imy.Dto.Pulse.PulseDto
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Response
+import java.io.IOException
 import java.text.DateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -36,6 +39,12 @@ class MainViewModel : ViewModel() {
 
     private val _getCurrentDate = MutableStateFlow("")
     private val getCurrentDate: StateFlow<String> get() = _getCurrentDate
+
+    private val _getPulseAvg = MutableSharedFlow<Int>()
+    val getPulseAvg: SharedFlow<Int> get() = _getPulseAvg
+
+    private val _getPulseAbove = MutableSharedFlow<Int>()
+    val getPulseAbove: SharedFlow<Int> get() = _getPulseAbove
 
     fun bpmCount(count: Int){
         if(_bpmCount.value?.toInt()!! < 5){
@@ -93,4 +102,50 @@ class MainViewModel : ViewModel() {
 
         _data.value = intData.toString()
     }
+
+    suspend fun fetchPulseAvg() {
+        try {
+            val pulseApi: PulseApi? = PulseClient.getClient()?.create(PulseApi::class.java)
+            val response = withContext(Dispatchers.IO) {
+                pulseApi?.getPulseAvgResponse()
+            }
+
+            if (response?.isSuccessful == true) {
+                val pulseAvg = response.body()?.string()?.toIntOrNull()
+                if (pulseAvg != null) {
+                    _getPulseAvg.emit(pulseAvg)
+                }
+                Log.d("getPulseAvg", "API 호출 성공, $_getPulseAvg")
+            } else {
+                val errorBody = response?.errorBody()?.string()
+                Log.d("getPulseAvg", "API 호출 실패, 오류 메시지: $errorBody")
+            }
+        } catch (e: IOException) {
+            Log.e("getPulseAvg", "API 호출 실패: ${e.message}")
+        }
+    }
+
+    suspend fun fetchPulseAbove() {
+        try {
+            val pulseApi: PulseApi? = PulseClient.getClient()?.create(PulseApi::class.java)
+            val response = withContext(Dispatchers.IO) {
+                pulseApi?.getPulseAboveResponse()
+            }
+
+            if (response?.isSuccessful == true) {
+                val pulseAbove = response.body()?.string()?.toIntOrNull()
+                if (pulseAbove != null) {
+                    _getPulseAbove.emit(pulseAbove)
+                }
+                Log.d("getPulseAvg", "API 호출 성공, $_getPulseAvg")
+            } else {
+                val errorBody = response?.errorBody()?.string()
+                Log.d("getPulseAvg", "API 호출 실패, 오류 메시지: $errorBody")
+            }
+        } catch (e: IOException) {
+            Log.e("getPulseAvg", "API 호출 실패: ${e.message}")
+        }
+    }
+
+
 }

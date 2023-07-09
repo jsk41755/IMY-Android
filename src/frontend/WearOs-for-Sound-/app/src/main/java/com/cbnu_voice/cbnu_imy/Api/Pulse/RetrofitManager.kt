@@ -1,12 +1,5 @@
 package com.cbnu_voice.cbnu_imy.Api.Pulse
 
-import android.util.Log
-import com.cbnu_voice.cbnu_imy.Utils.API
-import com.cbnu_voice.cbnu_imy.Utils.Constans.TAG
-import com.cbnu_voice.cbnu_imy.Utils.RESPONSE_STATE
-import com.google.gson.JsonElement
-import retrofit2.Call
-import retrofit2.Response
 
 class RetrofitManager {
     companion object{
