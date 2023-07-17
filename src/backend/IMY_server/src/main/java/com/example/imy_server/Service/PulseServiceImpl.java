@@ -72,28 +72,43 @@ public class PulseServiceImpl {
     }
 
     /**
-     * Pulse 객체를 StrPulse 객체로 변환하는 작업
+     * 맥박을 받아 이상맥박을 만들어 이상맥박을 저장하기 위한 함수
+     * @param pulses
+     * @param pulseDate
+     */
+    private void saveStrangePulse(List<Pulse> pulses, PulseDate pulseDate) {
+        //이상맥박을 찾아 리스트에 저장
+        List<StrangePulse>strangePulseList =  findStrangePulse(pulses,pulseDate);
+        //맥박 리스트 저장
+        strangePulseRepository.saveAllAndFlush(strangePulseList);
+    }
+
+    /**
+     * 맥박 List에서 이상맥박을 찾아 이상맥박List로 반환하는 함수.
      * 어댑터 패턴을 적용해 Pulse 와 StrPulse를 쉽게 변환 가능한지 확인 할 것.
      * @param pulses
      * @param pulseDate
      * @return
      */
     private List<StrangePulse> findStrangePulse(List<Pulse>pulses, PulseDate pulseDate){
-        
-        //이상맥박 분류
-
 
         //이상맥박 리스트 생성
-        List<StrangePulse> strPulseList = new ArrayList<>();
+        List<StrangePulse> strangePulseList = new ArrayList<>();
+        //이상맥박 분류
         for (Pulse p : pulses) {
-            StrangePulse strPulse = new StrangePulse(
-                    p.getCreatedTime(),
-                    p.getPulseValue()
-            );
-            strPulse.setPulseDate(pulseDate);
-            strPulseList.add(strPulse);
+            //맥박을 꺼내서
+            Integer pulse = Integer.parseInt(p.getPulseValue());
+            //맥박이 90보다 높으면 이상맥박으로 구분.
+            if(pulse>=90){
+                StrangePulse strangePulse = new StrangePulse(
+                        p.getCreatedTime(),
+                        p.getPulseValue()
+                );
+                strangePulse.setPulseDate(pulseDate);
+                strangePulseList.add(strangePulse);
+            }
         }
-        return strPulseList;
+        return strangePulseList;
     }
 
     private void updateAvgPulse(LocalDate date, PulseDate pulseDate) {
@@ -121,17 +136,6 @@ public class PulseServiceImpl {
         pulseRepository.saveAllAndFlush(pulseList);
     }
 
-    /**
-     * 맥박을 받아 이상맥박을 만들어 이상맥박을 저장하기 위한 함수
-     * @param pulses
-     * @param pulseDate
-     */
-    private void saveStrangePulse(List<Pulse> pulses, PulseDate pulseDate) {
-        //이상맥박을 찾아 리스트에 저장
-        List<StrangePulse>strangePulseList =  findStrangePulse(pulses,pulseDate);
-        //맥박 리스트 저장
-        strangePulseRepository.saveAllAndFlush(strangePulseList);
-    }
     /**
      * 일일 평균 맥박을 가져오기 위한 함수
      * @param date
