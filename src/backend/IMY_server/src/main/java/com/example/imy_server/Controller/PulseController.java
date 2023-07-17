@@ -3,7 +3,7 @@ package com.example.imy_server.Controller;
 import com.example.imy_server.Domain.Pulse.Pulse;
 import com.example.imy_server.Domain.Pulse.StrangePulse;
 import com.example.imy_server.Dto.Pulse.*;
-import com.example.imy_server.Service.PulseService;
+import com.example.imy_server.Service.PulseServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor // 생성자 주입
 public class PulseController {
 
-    private final PulseService pulseService;
+    private final PulseServiceImpl pulseServiceImpl;
 
     /**
      * 일별 측정된 모든 맥박값을 가져오는 함수
@@ -26,7 +26,7 @@ public class PulseController {
     public List<DailyPulseDto> GetPulse(){
 
         //pulseDto 값에 맞게 pulse 값을 뽑음.
-        return pulseService.getAllDailyPulse();
+        return pulseServiceImpl.getAllDailyPulse();
     }
 
     /**
@@ -36,12 +36,13 @@ public class PulseController {
     @PostMapping("/total")
     public void PostPulse(@RequestBody DailyPulseDto dailyPulseDto){
 
+        //pulseDto로 변경을 고민해볼 것.
         //리스트 형태의 시간당 맥박들
         List<Pulse> pulses = dailyPulseDto.getPulseList();
         //맥박이 측정된 날짜
         LocalDate pdate = dailyPulseDto.getCreatedDate();
         //일일 모든 맥박 저장 및 일일 평균 맥박 저장
-        pulseService.insertPulse(pulses,pdate);
+        pulseServiceImpl.insertPulse(pulses,pdate);
     }
 
     /**
@@ -59,7 +60,7 @@ public class PulseController {
     @GetMapping("/daily/avg/{date}")
     public AvgPulseDto GetDailyAvgPulse(
         @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        return pulseService.getDailyAvgPulse(date);
+        return pulseServiceImpl.getDailyAvgPulse(date);
     }
 
     /**
@@ -67,7 +68,7 @@ public class PulseController {
      */
     @GetMapping("/all/pulse/avg")
     public String GetAllPulseAvg(){
-        return pulseService.getAllPulsesAvg();
+        return pulseServiceImpl.getAllPulsesAvg();
     }
 
     /**
@@ -76,7 +77,7 @@ public class PulseController {
      */
     @GetMapping("/daily/avg/all")
     public List<DailyAvgPulseDto> GetAllDailyAvgPulse(){
-        return pulseService.getAllDailyAvgPulse();
+        return pulseServiceImpl.getAllDailyAvgPulse();
     }
 
     /**
@@ -90,21 +91,21 @@ public class PulseController {
         //이상맥박이 측정된 날짜
         LocalDate pdate = dailyStrangePulseDto.getCreatedDate();
         //일일 모든 이상맥박 저장
-        pulseService.insertDailyStrangePulse(pulses, pdate);
+        //pulseServiceImpl.insertDailyStrangePulse(pulses, pdate);
 
     }
     @GetMapping("/daily/str")
     public List<DailyStrangePulseDto> GetAllDailyStrangePulse(){
-        return pulseService.GetAllDailyStrangePulse();
+        return pulseServiceImpl.GetAllDailyStrangePulse();
     }
 
     @GetMapping("/daily/str/cnt/{date}")
     public StrPulseDto GetDailyStrPulseCnt(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        return pulseService.CountDailyStrangePulse(date);
+        return pulseServiceImpl.CountDailyStrangePulse(date);
     }
 
     @GetMapping("/all/str/cnt")
     public String GetAllStrPulseCnt(){
-        return pulseService.CountAllStrPulse();
+        return pulseServiceImpl.CountAllStrPulse();
     }
 }
