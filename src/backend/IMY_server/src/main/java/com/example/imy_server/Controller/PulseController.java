@@ -36,22 +36,15 @@ public class PulseController {
     @PostMapping("/total")
     public void PostPulse(@RequestBody DailyPulseDto dailyPulseDto){
 
-        //pulseDto로 변경을 고민해볼 것.
+        /**
+         * PulseDto로 변경해야함.
+         */
         //리스트 형태의 시간당 맥박들
         List<Pulse> pulses = dailyPulseDto.getPulseList();
         //맥박이 측정된 날짜
         LocalDate pdate = dailyPulseDto.getCreatedDate();
         //일일 모든 맥박 저장 및 일일 평균 맥박 저장
         pulseServiceImpl.insertPulse(pulses,pdate);
-    }
-
-    /**
-     * 전체 평균 맥박 가져오기
-     * 평균 맥박은 daily 맥박이 들어올때 마다 그때그때 같이 업데이트
-     */
-    @GetMapping("/total/avg")
-    public void GetAvgPulse(){
-
     }
 
     /**
@@ -81,6 +74,7 @@ public class PulseController {
     }
 
     /**
+     * 이상맥박값 dump 값을 저장하기 위한 함수
      * 총 발생 이상값 저장.
      */
     @PostMapping("/total/str")
@@ -91,7 +85,7 @@ public class PulseController {
         //이상맥박이 측정된 날짜
         LocalDate pdate = dailyStrangePulseDto.getCreatedDate();
         //일일 모든 이상맥박 저장
-        //pulseServiceImpl.insertDailyStrangePulse(pulses, pdate);
+        pulseServiceImpl.insertDailyStrangePulse(pulses, pdate);
 
     }
     @GetMapping("/daily/str")
