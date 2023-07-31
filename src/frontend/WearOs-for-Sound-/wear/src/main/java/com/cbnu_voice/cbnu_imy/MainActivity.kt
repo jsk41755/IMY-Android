@@ -74,52 +74,6 @@ class MainActivity : AppCompatActivity(), AmbientModeSupport.AmbientCallbackProv
         // Enables Always-on
         ambientController = AmbientModeSupport.attach(this)
 
-        //On click listener for sendmessage button
-        /*binding.sendmessageButton.setOnClickListener {
-            if (mobileDeviceConnected) {
-                if (binding.lastMeasuredValue.text!!.isNotEmpty()) {
-
-                    val nodeId: String = messageEvent?.sourceNodeId!!
-                    // Set the data of the message to be the bytes of the Uri.
-                    val payload: ByteArray =
-                        binding.lastMeasuredValue.text.toString().toByteArray()
-
-                    // Send the rpc
-                    // Instantiates clients without member variables, as clients are inexpensive to
-                    // create. (They are cached and shared between GoogleApi instances.)
-                    val sendMessageTask =
-                        Wearable.getMessageClient(activityContext!!)
-                            .sendMessage(nodeId, MESSAGE_ITEM_RECEIVED_PATH, payload)
-
-                    binding.deviceconnectionStatusTv.visibility = View.GONE
-
-                    sendMessageTask.addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            Log.d("send1", "Message sent successfully")
-                            val sbTemp = StringBuilder()
-                            sbTemp.append("\n")
-                            sbTemp.append(binding.lastMeasuredValue.text.toString())
-                            sbTemp.append(" (Sent to mobile)")
-                            Log.d("receive1", " $sbTemp")
-                            binding.messagelogTextView.append(sbTemp)
-
-                            binding.scrollviewTextMessageLog.requestFocus()
-                            binding.scrollviewTextMessageLog.post {
-                                binding.scrollviewTextMessageLog.fullScroll(ScrollView.FOCUS_DOWN)
-                            }
-                        } else {
-                            Log.d("send1", "Message failed.")
-                        }
-                    }
-                } else {
-                    Toast.makeText(
-                        activityContext,
-                        "Message content is empty. Please enter some message and proceed",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }*/
 
         permissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->

@@ -13,7 +13,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Debug
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -53,7 +52,6 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import java.io.File
-import java.util.*
 
 
 class chatFragment : Fragment() {
@@ -467,7 +465,7 @@ class chatFragment : Fragment() {
             runCatching {
                 val startTime = System.currentTimeMillis()
 
-                val retrofit = RetrofitBuilder.chatbotapi.getKobertResponse(s)
+                val retrofit = RetrofitBuilder.chatBotApi.getKobertResponse(s)
                 val res = retrofit.execute().body()
 
                 val endTime = System.currentTimeMillis()

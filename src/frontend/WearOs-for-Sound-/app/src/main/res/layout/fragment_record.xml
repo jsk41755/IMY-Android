@@ -175,7 +175,7 @@
                     android:layout_height="wrap_content"/>
 
                 <RelativeLayout
-                    android:id="@+id/record_weekAvgBpm"
+                    android:id="@+id/record_pieChart"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="16dp"
@@ -183,6 +183,65 @@
                     android:elevation="5dp"
                     android:background="@drawable/text_round_box"
                     app:layout_constraintTop_toBottomOf="@id/record_tendency">
+
+                    <ImageView
+                        android:id="@+id/record_heart3"
+                        android:src="@drawable/main_logo"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="25dp"
+                        android:layout_width="33.7dp"
+                        android:layout_height="25dp"/>
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:layout_marginStart="13dp"
+                        android:text="@string/recent_emotion_ratio"
+                        android:textSize="17sp"
+                        android:layout_toRightOf="@id/record_heart3"
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/emotion_ratio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/record_pieChart">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/emotion_ratio_pieChart"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_marginTop="10dp" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/emotion_ratio_Layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:layout_marginTop="10dp">
+
+
+
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <RelativeLayout
+                    android:id="@+id/record_weekAvgBpm"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="16dp"
+                    android:clipToPadding="false"
+                    android:elevation="5dp"
+                    android:background="@drawable/text_round_box"
+                    app:layout_constraintTop_toBottomOf="@id/emotion_ratio">
 
                     <ImageView
                         android:id="@+id/record_heart2"

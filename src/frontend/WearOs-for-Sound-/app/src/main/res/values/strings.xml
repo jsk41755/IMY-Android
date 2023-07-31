@@ -19,4 +19,5 @@
 
     <string name="loading">로딩중...</string>
     <string name="bpm">77</string>
+    <string name="recent_emotion_ratio">최근 느낀 감정의 비율</string>
 </resources>

@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cbnu_voice.cbnu_imy.Api.Pulse.PulseApi
 import com.cbnu_voice.cbnu_imy.Api.Pulse.PulseClient
+import com.cbnu_voice.cbnu_imy.Api.RetrofitBuilder
+import com.cbnu_voice.cbnu_imy.Data.EmotionCount
 import com.cbnu_voice.cbnu_imy.Data.PulseData
 import com.cbnu_voice.cbnu_imy.Dto.Pulse.PulseDto
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +21,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import retrofit2.Response
 import java.io.IOException
-import java.text.DateFormat
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.max
@@ -45,6 +45,9 @@ class MainViewModel : ViewModel() {
 
     private val _getPulseAbove = MutableSharedFlow<Int>()
     val getPulseAbove: SharedFlow<Int> get() = _getPulseAbove
+
+    private val _emotionCounts = MutableStateFlow<List<EmotionCount>>(emptyList())
+    val emotionCounts: StateFlow<List<EmotionCount>> get() = _emotionCounts
 
     fun bpmCount(count: Int){
         if(_bpmCount.value?.toInt()!! < 5){
@@ -147,5 +150,15 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun fetchEmotionCounts() {
+        viewModelScope.launch {
+            try {
+                val counts = RetrofitBuilder.getEmotionsCount()
+                _emotionCounts.value = counts
+            } catch (e: Exception) {
+                // Handle the error
+            }
+        }
+    }
 
 }

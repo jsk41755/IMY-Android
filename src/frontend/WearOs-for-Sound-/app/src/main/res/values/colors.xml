@@ -71,4 +71,9 @@
     <color name="bot_like_button_default">#DADADA</color>
 
 
+    <color name="joy">#43D681</color>
+    <color name="surprise">#52C14C</color>
+    <color name="anger">#52C14C</color>
+    <color name="anxiety">#A4D8B7</color>
+    <color name="sadness">#009640</color>
 </resources>

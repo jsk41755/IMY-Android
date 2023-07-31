@@ -1,35 +1,52 @@
 package com.cbnu_voice.cbnu_imy.view
 
+import android.graphics.Color
+import android.icu.text.ListFormatter.Width
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.cbnu_voice.cbnu_imy.CustomBarChartRender
+import com.cbnu_voice.cbnu_imy.Data.EmotionCount
+import com.cbnu_voice.cbnu_imy.Data.getCountForEmotion
+import com.cbnu_voice.cbnu_imy.Data.getTotalCount
 import com.cbnu_voice.cbnu_imy.R
 import com.cbnu_voice.cbnu_imy.databinding.FragmentRecordBinding
 import com.cbnu_voice.cbnu_imy.viewmodel.MainViewModel
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 
 class recordFragment : Fragment() {
 
     private var binding: FragmentRecordBinding? = null
     private lateinit var mainViewModel: MainViewModel
+    private lateinit var textContainer: LinearLayoutCompat
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +62,13 @@ class recordFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        textContainer = binding?.emotionRatioLayout!!
+
+        val pieChart: PieChart = binding?.emotionRatioPieChart!!
+        pieChart.setUsePercentValues(true)
+        pieChart.description.isEnabled = false
+        pieChart.legend.isEnabled = true
+        pieChart.setEntryLabelColor(Color.BLACK)
 
         viewLifecycleOwner.lifecycleScope.launch {
             mainViewModel.fetchPulseAvg()
@@ -62,6 +86,43 @@ class recordFragment : Fragment() {
                 binding?.recordAboveBpmMonth?.text = pulseAbove.toString().plus("회")
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            mainViewModel.emotionCounts.collect { emotionCounts ->
+                val entries = mutableListOf<PieEntry>()
+
+                for (emotionCount in emotionCounts) {
+                    entries.add(PieEntry(emotionCount.joy.toFloat()))
+                    entries.add(PieEntry(emotionCount.surprise.toFloat()))
+                    entries.add(PieEntry(emotionCount.anger.toFloat()))
+                    entries.add(PieEntry(emotionCount.anxiety.toFloat()))
+                    entries.add(PieEntry(emotionCount.sadness.toFloat()))
+                }
+
+                Log.d("entries", entries.toString())
+
+                val dataSet = PieDataSet(entries, "Emotion Counts")
+                dataSet.colors = mutableListOf(
+                    ContextCompat.getColor(requireContext(), R.color.joy),
+                    ContextCompat.getColor(requireContext(), R.color.surprise),
+                    ContextCompat.getColor(requireContext(), R.color.anger),
+                    ContextCompat.getColor(requireContext(), R.color.anxiety),
+                    ContextCompat.getColor(requireContext(), R.color.sadness)
+                )
+
+                updateTextViews(emotionCounts)
+
+                val pieData = PieData(dataSet)
+                pieData.setDrawValues(false) // 비율 숫자 숨기기
+                pieChart.data = pieData
+                pieChart.description.isEnabled = false
+                pieChart.legend.isEnabled = false // 범례 숨기기
+                pieChart.setTouchEnabled(false)
+                pieChart.invalidate()
+            }
+        }
+
+        mainViewModel.fetchEmotionCounts()
 
         var barChart: BarChart = binding?.bpmBarChart!! // barChart 생성
 
@@ -167,6 +228,56 @@ class recordFragment : Fragment() {
             invalidate()
         }
     }
+
+    private fun updateTextViews(emotionCounts: List<EmotionCount>) {
+        textContainer.removeAllViews()
+
+        val totalCount = emotionCounts.sumOf { it.getTotalCount() }
+        if (totalCount == 0) {
+            // Handle the case when totalCount is zero, for example, display a message
+            return
+        }
+
+        val emotionNames = listOf("기쁨", "당황", "분노", "불안", "우울")
+
+        emotionNames.forEach { emotionName ->
+            val count = emotionCounts.sumOf { it.getCountForEmotion(emotionName) }
+            val percentage = (count.toFloat() / totalCount) * 100
+            val roundedPercentage = percentage.coerceAtMost(100f).roundToInt()
+
+            val linearLayout = LinearLayoutCompat(requireContext())
+            linearLayout.orientation = LinearLayoutCompat.HORIZONTAL
+
+            val imageView = ImageView(requireContext())
+
+            val colorResId = when (emotionName) {
+                "기쁨" -> R.color.joy
+                "당황" -> R.color.surprise
+                "분노" -> R.color.anger
+                "불안" -> R.color.anxiety
+                "우울" -> R.color.sadness
+                else -> R.color.imy_text // 기본값 설정
+            }
+
+            val backgroundColor = ContextCompat.getColor(requireContext(), colorResId)
+
+            // 배경색 설정
+            imageView.setBackgroundColor(backgroundColor)
+
+            val textView = TextView(requireContext())
+            textView.text = "$emotionName ($roundedPercentage%)"
+            textView.textSize = 16f
+            textView.gravity = Gravity.CENTER
+
+            linearLayout.addView(imageView)
+            linearLayout.addView(textView)
+
+            textContainer.addView(linearLayout)
+        }
+    }
+
+
+
 
     inner class MyXAxisFormatter(private val days: Array<String>) : ValueFormatter() {
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
