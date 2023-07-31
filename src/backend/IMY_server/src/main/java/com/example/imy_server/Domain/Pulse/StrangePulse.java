@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 
 import javax.persistence.*;
 import java.time.LocalTime;
@@ -17,14 +18,14 @@ public class StrangePulse {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long strSeq;
     private LocalTime createdTime;
-    private String strValue;
+    private String strPulseValue;
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="dateSeq")
     private PulseDate pulseDate;
 
-    public StrangePulse(LocalTime createdTime, String strValue) {
+    public StrangePulse(LocalTime createdTime, String strPulseValue) {
         this.createdTime = createdTime;
-        this.strValue = strValue;
+        this.strPulseValue = strPulseValue;
     }
 }
