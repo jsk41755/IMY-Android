@@ -8,12 +8,14 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.marginEnd
 import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -247,8 +249,22 @@ class recordFragment : Fragment() {
 
             val linearLayout = LinearLayoutCompat(requireContext())
             linearLayout.orientation = LinearLayoutCompat.HORIZONTAL
+            linearLayout.gravity = Gravity.CENTER
+
+            val linearLayoutParams = LinearLayoutCompat.LayoutParams(
+                LinearLayoutCompat.LayoutParams.WRAP_CONTENT,
+                LinearLayoutCompat.LayoutParams.WRAP_CONTENT
+            )
+            linearLayoutParams.setMargins(0, 0, 0, 20) // 오른쪽 마진을 10dp로 설정
+            linearLayout.layoutParams = linearLayoutParams // 변경된 LayoutParams 적용
 
             val imageView = ImageView(requireContext())
+            imageView.setImageResource(R.drawable.circle_image)
+            val layoutParams = LinearLayoutCompat.LayoutParams(
+                40, 40 // 이미지 뷰의 크기 설정
+            )
+            imageView.layoutParams = layoutParams
+            layoutParams.marginEnd = 20
 
             val colorResId = when (emotionName) {
                 "기쁨" -> R.color.joy
@@ -260,9 +276,7 @@ class recordFragment : Fragment() {
             }
 
             val backgroundColor = ContextCompat.getColor(requireContext(), colorResId)
-
-            // 배경색 설정
-            imageView.setBackgroundColor(backgroundColor)
+            imageView.setColorFilter(backgroundColor)
 
             val textView = TextView(requireContext())
             textView.text = "$emotionName ($roundedPercentage%)"
@@ -275,8 +289,6 @@ class recordFragment : Fragment() {
             textContainer.addView(linearLayout)
         }
     }
-
-
 
 
     inner class MyXAxisFormatter(private val days: Array<String>) : ValueFormatter() {
