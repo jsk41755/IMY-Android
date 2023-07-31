@@ -44,6 +44,7 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
     private var wearableNodeUri: String? = null
 
     private var bpmPrint :String? = null
+    private var currentFragment: Fragment = HomeFragment()
 
     private lateinit var sharedViewModel: MainViewModel
 
@@ -58,21 +59,24 @@ class FragmentActivity : AppCompatActivity(), CoroutineScope by MainScope(),
 
         binding.bottomNav.selectedItemId = R.id.menu_home
 
-        binding.bottomNav.setOnItemSelectedListener {
-            when(it.itemId){
-                R.id.menu_chat -> replaceFragment(chatFragment())
-                R.id.menu_record -> replaceFragment(recordFragment())
-                R.id.menu_home -> replaceFragment(HomeFragment())
-                R.id.menu_favorite -> replaceFragment(favoriteFragment())
-                R.id.menu_setting -> replaceFragment(settingFragment())
-
-                else -> {
-
-                }
+        binding.bottomNav.setOnItemSelectedListener { menuItem ->
+            val newFragment = when (menuItem.itemId) {
+                R.id.menu_chat -> chatFragment()
+                R.id.menu_record -> recordFragment()
+                R.id.menu_home -> HomeFragment()
+                R.id.menu_favorite -> favoriteFragment()
+                R.id.menu_setting -> settingFragment()
+                else -> null
             }
+
+            if (newFragment != null && newFragment::class.java != currentFragment::class.java) {
+            replaceFragment(newFragment)
+            currentFragment = newFragment
+            Log.d("currentFragment", currentFragment.toString())
+            }
+
             true
         }
-
 
         activityContext = this
         wearableDeviceConnected = false

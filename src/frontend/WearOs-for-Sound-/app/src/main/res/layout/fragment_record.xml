@@ -188,7 +188,7 @@
                         android:id="@+id/record_heart3"
                         android:src="@drawable/main_logo"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="25dp"
+                        android:layout_marginStart="30dp"
                         android:layout_width="33.7dp"
                         android:layout_height="25dp"/>
 
@@ -247,7 +247,7 @@
                         android:id="@+id/record_heart2"
                         android:src="@drawable/main_logo"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="25dp"
+                        android:layout_marginStart="30dp"
                         android:layout_width="33.7dp"
                         android:layout_height="25dp"/>
 

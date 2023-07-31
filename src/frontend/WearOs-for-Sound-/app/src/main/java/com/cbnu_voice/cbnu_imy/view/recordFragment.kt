@@ -120,6 +120,7 @@ class recordFragment : Fragment() {
                 pieChart.description.isEnabled = false
                 pieChart.legend.isEnabled = false // 범례 숨기기
                 pieChart.setTouchEnabled(false)
+                pieChart.setDrawSlicesUnderHole(true)
                 pieChart.invalidate()
             }
         }
@@ -265,6 +266,7 @@ class recordFragment : Fragment() {
             )
             imageView.layoutParams = layoutParams
             layoutParams.marginEnd = 20
+            layoutParams.topMargin = 5
 
             val colorResId = when (emotionName) {
                 "기쁨" -> R.color.joy
