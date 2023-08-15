@@ -3,8 +3,15 @@ package com.example.imy_server.Controller;
 import com.example.imy_server.Domain.Pulse.Pulse;
 import com.example.imy_server.Domain.Pulse.StrangePulse;
 import com.example.imy_server.Dto.Pulse.*;
-import com.example.imy_server.Service.PulseServiceImpl;
+import com.example.imy_server.Service.countService.CountStrangePulseService;
+import com.example.imy_server.Service.findService.FindAvgPulseService;
+import com.example.imy_server.Service.findService.FindPulseService;
+import com.example.imy_server.Service.findService.FindStrangePulseService;
+import com.example.imy_server.Service.saveService.SavePulseService;
+import com.example.imy_server.Service.saveService.SaveStrangePulseService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,11 +20,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/pulse")
-@RequiredArgsConstructor // 생성자 주입
+@RequiredArgsConstructor// 생성자 주입
 public class PulseController {
 
-    private final PulseServiceImpl pulseServiceImpl;
-
+    @Autowired
+    private SavePulseService savePulseService;
+    @Autowired
+    private FindPulseService findPulseService;
+    @Autowired
+    private FindStrangePulseService findStrangePulseService;
+    @Autowired
+    private FindAvgPulseService findAvgPulseService;
+    @Autowired
+    private SaveStrangePulseService saveStrangePulseService;
+    @Autowired
+    private CountStrangePulseService countStrangePulseService;
     /**
      * 일별 측정된 모든 맥박값을 가져오는 함수
      * @return
@@ -26,7 +43,7 @@ public class PulseController {
     public List<DailyPulseDto> GetPulse(){
 
         //pulseDto 값에 맞게 pulse 값을 뽑음.
-        return pulseServiceImpl.getAllDailyPulse();
+        return findPulseService.getAllDailyPulse();
     }
 
     /**
@@ -44,7 +61,7 @@ public class PulseController {
         //맥박이 측정된 날짜
         LocalDate pdate = dailyPulseDto.getCreatedDate();
         //일일 모든 맥박 저장 및 일일 평균 맥박 저장
-        pulseServiceImpl.insertPulse(pulses,pdate);
+        savePulseService.savePulse(pulses,pdate);
     }
 
     /**
@@ -53,7 +70,7 @@ public class PulseController {
     @GetMapping("/daily/avg/{date}")
     public AvgPulseDto GetDailyAvgPulse(
         @PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        return pulseServiceImpl.getDailyAvgPulse(date);
+        return findAvgPulseService.getDailyAvgPulse(date);
     }
 
     /**
@@ -61,7 +78,7 @@ public class PulseController {
      */
     @GetMapping("/all/pulse/avg")
     public String GetAllPulseAvg(){
-        return pulseServiceImpl.getAllPulsesAvg();
+        return findAvgPulseService.getAllPulsesAvg();
     }
 
     /**
@@ -70,7 +87,7 @@ public class PulseController {
      */
     @GetMapping("/daily/avg/all")
     public List<DailyAvgPulseDto> GetAllDailyAvgPulse(){
-        return pulseServiceImpl.getAllDailyAvgPulse();
+        return findAvgPulseService.getAllDailyAvgPulse();
     }
 
     /**
@@ -85,21 +102,21 @@ public class PulseController {
         //이상맥박이 측정된 날짜
         LocalDate pdate = dailyStrangePulseDto.getCreatedDate();
         //일일 모든 이상맥박 저장
-        pulseServiceImpl.insertDailyStrangePulse(pulses, pdate);
+        saveStrangePulseService.insertDailyStrangePulse(pulses, pdate);
 
     }
     @GetMapping("/daily/str")
     public List<DailyStrangePulseDto> GetAllDailyStrangePulse(){
-        return pulseServiceImpl.GetAllDailyStrangePulse();
+        return findStrangePulseService.GetAllDailyStrangePulse();
     }
 
     @GetMapping("/daily/str/cnt/{date}")
     public StrPulseDto GetDailyStrPulseCnt(@PathVariable("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date){
-        return pulseServiceImpl.CountDailyStrangePulse(date);
+        return countStrangePulseService.CountDailyStrangePulse(date);
     }
 
     @GetMapping("/all/str/cnt")
     public String GetAllStrPulseCnt(){
-        return pulseServiceImpl.CountAllStrPulse();
+        return countStrangePulseService.CountAllStrPulse();
     }
 }
